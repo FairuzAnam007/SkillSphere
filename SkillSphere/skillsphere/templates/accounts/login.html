@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | SkillSphere{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card">
+        <div class="auth-badge">🔐 Secure access to your student space</div>
+
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-text">
+            Log in to continue building your profile, tracking your skills, and managing your
+            academic growth in one beautiful place.
+        </p>
+
+        <form method="post" class="form-grid">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div class="field-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+            </div>
+
+            <div class="field-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Back Home</a>
+            </div>
+        </form>
+
+        <p class="helper-text">
+            New here? <a href="{% url 'signup' %}">Create your account</a>
+        </p>
+    </div>
+</section>
+{% endblock %}
