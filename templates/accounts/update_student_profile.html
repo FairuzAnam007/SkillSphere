@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Student Profile{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card" style="max-width: 800px;">
+        <div class="auth-badge">✏️ Update Student Profile</div>
+        <h1 class="auth-title">Edit Your Profile</h1>
+
+        <form method="post" enctype="multipart/form-data" class="form-grid">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

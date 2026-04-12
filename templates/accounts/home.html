@@ -1,0 +1,359 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | SkillSphere{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        min-height: calc(100vh - 160px);
+        display: grid;
+        grid-template-columns: 1.2fr 0.95fr;
+        gap: 28px;
+        align-items: center;
+        padding: 18px 0 10px;
+    }
+
+    .hero-left {
+        animation: fadeUp 0.9s ease;
+    }
+
+    .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: #dbeafe;
+        margin-bottom: 22px;
+        font-size: 0.92rem;
+        backdrop-filter: blur(12px);
+    }
+
+    .hero-title {
+        font-size: clamp(2.8rem, 7vw, 5.2rem);
+        line-height: 0.98;
+        font-weight: 900;
+        letter-spacing: -1.6px;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 35%, #c4b5fd 70%, #67e8f9 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .hero-subtitle {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.9;
+        max-width: 680px;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 14px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+    }
+
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 32px;
+    }
+
+    .mini-stat {
+        padding: 18px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        backdrop-filter: blur(12px);
+        transition: 0.3s ease;
+    }
+
+    .mini-stat:hover {
+        transform: translateY(-4px);
+        background: rgba(255,255,255,0.11);
+    }
+
+    .mini-stat h3 {
+        font-size: 1.8rem;
+        margin-bottom: 6px;
+    }
+
+    .mini-stat p {
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.92rem;
+    }
+
+    .hero-right {
+        display: grid;
+        gap: 18px;
+        animation: fadeUp 1s ease;
+    }
+
+    .showcase {
+        padding: 22px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .showcase::before {
+        content: "";
+        position: absolute;
+        inset: auto -60px -70px auto;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(110,168,254,0.34), transparent 70%);
+        pointer-events: none;
+    }
+
+    .showcase-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .status-pill {
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(34, 197, 94, 0.14);
+        color: #bbf7d0;
+        border: 1px solid rgba(34, 197, 94, 0.20);
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    .showcase h3 {
+        font-size: 1.35rem;
+    }
+
+    .showcase p {
+        color: var(--muted);
+        line-height: 1.7;
+        margin-top: 8px;
+    }
+
+    .skill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .skill-chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.11);
+        color: #e6efff;
+        font-size: 0.9rem;
+        transition: 0.25s ease;
+    }
+
+    .skill-chip:hover {
+        transform: translateY(-2px);
+        background: rgba(255,255,255,0.11);
+    }
+
+    .feature-section {
+        margin-top: 40px;
+    }
+
+    .feature-header {
+        text-align: center;
+        margin-bottom: 24px;
+        animation: fadeUp 1s ease;
+    }
+
+    .feature-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .feature-card {
+        padding: 24px;
+        transition: 0.3s ease;
+        animation: fadeUp 1s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-6px);
+        background: rgba(255,255,255,0.12);
+    }
+
+    .feature-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, rgba(110,168,254,0.24), rgba(139,92,246,0.24));
+        border: 1px solid rgba(255,255,255,0.12);
+        font-size: 1.5rem;
+        margin-bottom: 18px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        color: var(--muted);
+        line-height: 1.75;
+    }
+
+    @media (max-width: 980px) {
+        .hero {
+            grid-template-columns: 1fr;
+        }
+
+        .feature-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .hero-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+            letter-spacing: -0.8px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-left">
+        <div class="eyebrow">
+            ✨ Smart student skill tracking for your future
+        </div>
+
+        <h1 class="hero-title">
+            Build your <span class="gradient-text">skill identity</span> and shine professionally.
+        </h1>
+
+        <p class="hero-subtitle">
+            SkillSphere helps students create a modern academic profile, track verified skills,
+            organize achievements, and prepare confidently for internships, jobs, and career growth
+            with a polished digital presence.
+        </p>
+
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'role_redirect' %}" class="btn btn-primary">Go to Dashboard</a>
+            {% else %}
+                <a href="{% url 'signup' %}" class="btn btn-primary">Create Account</a>
+                <a href="{% url 'login' %}" class="btn btn-secondary">Login Now</a>
+            {% endif %}
+        </div>
+
+        <div class="hero-stats">
+            <div class="mini-stat glass-card">
+                <h3>01</h3>
+                <p>Create a beautiful student profile with essential academic and personal details.</p>
+            </div>
+            <div class="mini-stat glass-card">
+                <h3>02</h3>
+                <p>Track technical and soft skills to make your progress visible and meaningful.</p>
+            </div>
+            <div class="mini-stat glass-card">
+                <h3>03</h3>
+                <p>Stay ready for future verification, mentoring, and recruiter opportunities.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-right">
+        <div class="glass-card showcase">
+            <div class="showcase-top">
+                <h3>Student Profile Preview</h3>
+                <span class="status-pill">Active</span>
+            </div>
+            <p>
+                A clean, modern profile dashboard where skills, achievements, certificates,
+                and future verified badges can be displayed beautifully.
+            </p>
+            <div class="skill-list">
+                <span class="skill-chip">Python</span>
+                <span class="skill-chip">Django</span>
+                <span class="skill-chip">UI Design</span>
+                <span class="skill-chip">Problem Solving</span>
+                <span class="skill-chip">Leadership</span>
+            </div>
+        </div>
+
+        <div class="glass-card showcase">
+            <div class="showcase-top">
+                <h3>Career Readiness</h3>
+                <span class="status-pill">Future Ready</span>
+            </div>
+            <p>
+                Organize your skills and academic strengths in one place so you can confidently
+                apply for opportunities and present yourself in a professional way.
+            </p>
+            <div class="skill-list">
+                <span class="skill-chip">Certificates</span>
+                <span class="skill-chip">Projects</span>
+                <span class="skill-chip">Verification</span>
+                <span class="skill-chip">Recruiter Access</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="feature-section">
+    <div class="feature-header">
+        <h2 class="section-title">Everything designed to feel modern, clean, and inspiring</h2>
+        <p class="section-subtitle" style="margin-left:auto; margin-right:auto;">
+            Aesthetic design meets useful functionality, helping students build confidence while
+            keeping their profiles organized and future-focused.
+        </p>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card glass-card">
+            <div class="feature-icon">🎓</div>
+            <h3>Academic Identity</h3>
+            <p>
+                Maintain a polished digital profile that represents your academic journey in a clear,
+                elegant, and professional way.
+            </p>
+        </div>
+
+        <div class="feature-card glass-card">
+            <div class="feature-icon">🚀</div>
+            <h3>Growth Tracking</h3>
+            <p>
+                See your learning journey evolve as you add skills, projects, and achievements in a
+                visually engaging environment.
+            </p>
+        </div>
+
+        <div class="feature-card glass-card">
+            <div class="feature-icon">💼</div>
+            <h3>Opportunity Ready</h3>
+            <p>
+                Build a stronger presence for internships and jobs with a profile that looks
+                trustworthy, modern, and easy to understand.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

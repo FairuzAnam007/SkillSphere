@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Certificates and Project Links{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card" style="max-width: 800px;">
+        <div class="auth-badge">📄 Upload Certificates and Project Links</div>
+        <h1 class="auth-title">Add Certificate or Project</h1>
+
+        <form method="post" enctype="multipart/form-data" class="form-grid">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Upload</button>
+                <a href="{% url 'student_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
