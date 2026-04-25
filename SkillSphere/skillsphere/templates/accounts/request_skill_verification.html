@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Request Skill Verification | SkillSphere{% endblock %}
+
+{% block content %}
+<div style="max-width: 640px; margin: 40px auto; padding: 32px;
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); backdrop-filter: blur(20px);">
+
+    <h2 style="margin-bottom: 8px;">Request Skill Verification</h2>
+    <p style="color: var(--muted); margin-bottom: 24px;">
+        Submit a skill for verification. Attach a certificate or describe your proof.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 10px 14px; margin-bottom: 14px; border-radius: 10px;
+                        background: rgba(239,68,68,0.15); color: #fca5a5;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div style="color: var(--danger); margin-bottom: 12px;
+                        padding: 10px; background: rgba(239,68,68,0.1); border-radius: 10px;">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; margin-bottom: 6px;
+                              color: var(--muted); font-weight: 500;">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color: var(--muted); display: block; margin-top: 4px;">
+                        {{ field.help_text }}
+                    </small>
+                {% endif %}
+                {% if field.errors %}
+                    <small style="color: var(--danger); display: block; margin-top: 4px;">
+                        {{ field.errors|join:" " }}
+                    </small>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+            <button type="submit"
+                    style="padding: 11px 22px; border-radius: 12px;
+                           background: var(--primary); border: none; color: white;
+                           font-weight: 600; cursor: pointer; font-size: 0.95rem;">
+                Submit Request
+            </button>
+            <a href="{% url 'my_verifications' %}"
+               style="padding: 11px 22px; border-radius: 12px;
+                      background: var(--glass-strong); color: var(--text);
+                      text-decoration: none; font-weight: 500;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    form input, form select, form textarea {
+        width: 100%;
+        padding: 10px 14px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+    form input:focus, form select:focus, form textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+    form select option {
+        background: var(--bg-2);
+        color: var(--text);
+    }
+</style>
+{% endblock %}

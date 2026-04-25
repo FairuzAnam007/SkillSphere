@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}403 Forbidden | SkillSphere{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card" style="text-align: center;">
+        <div class="auth-badge">🚫 Access Denied</div>
+        <h1 class="auth-title" style="font-size: 4rem;">403</h1>
+        <p class="auth-text">
+            You do not have permission to access this page.
+            Please make sure you are logged in with the correct role.
+        </p>
+        <div class="form-actions" style="justify-content: center;">
+            <a href="{% url 'role_redirect' %}" class="btn btn-primary">Go to Dashboard</a>
+            <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

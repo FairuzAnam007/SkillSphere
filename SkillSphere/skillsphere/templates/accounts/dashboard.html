@@ -1,20 +1,435 @@
 {% extends 'base.html' %}
 
+{% block title %}Dashboard | SkillSphere{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-wrap {
+        display: grid;
+        gap: 22px;
+    }
+
+    .dash-hero {
+        padding: 28px;
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04)),
+            radial-gradient(circle at top right, rgba(110,168,254,0.18), transparent 28%),
+            radial-gradient(circle at bottom left, rgba(139,92,246,0.14), transparent 30%);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.20);
+    }
+
+    .dash-hero::before {
+        content: "";
+        position: absolute;
+        top: -70px;
+        right: -70px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+        pointer-events: none;
+    }
+
+    .dash-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.10);
+        color: #dbeafe;
+        font-size: 0.9rem;
+        margin-bottom: 14px;
+    }
+
+    .dash-title {
+        font-size: clamp(2rem, 4vw, 3.3rem);
+        line-height: 1.02;
+        font-weight: 900;
+        margin-bottom: 10px;
+        letter-spacing: -1px;
+    }
+
+    .dash-title span {
+        background: linear-gradient(135deg, #e0e7ff, #93c5fd, #c4b5fd);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .dash-text {
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 760px;
+        margin-bottom: 22px;
+    }
+
+    .dash-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .dash-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 22px;
+    }
+
+    .dash-card {
+        padding: 24px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 18px 45px rgba(0,0,0,0.16);
+    }
+
+    .card-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        margin-bottom: 18px;
+    }
+
+    .profile-top {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .profile-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 28px;
+        object-fit: cover;
+        border: 3px solid rgba(255,255,255,0.15);
+        box-shadow: 0 16px 35px rgba(0,0,0,0.22);
+        background: rgba(255,255,255,0.06);
+    }
+
+    .profile-placeholder {
+        width: 150px;
+        height: 150px;
+        border-radius: 28px;
+        display: grid;
+        place-items: center;
+        font-size: 2.4rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, rgba(110,168,254,0.24), rgba(139,92,246,0.24));
+        border: 2px solid rgba(255,255,255,0.12);
+        color: #eef4ff;
+    }
+
+    .profile-main h3 {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+    }
+
+    .profile-main p {
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 14px;
+    }
+
+    .mini-tags {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .mini-tags span {
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.10);
+        font-size: 0.88rem;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .detail-item {
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .detail-item strong {
+        display: block;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: #c7d6f2;
+        margin-bottom: 6px;
+    }
+
+    .detail-item span {
+        color: #f4f8ff;
+        line-height: 1.6;
+        word-break: break-word;
+    }
+
+    .bio-box {
+        margin-top: 16px;
+        padding: 16px 18px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .bio-box strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #dbeafe;
+    }
+
+    .bio-box p {
+        color: var(--muted);
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .upload-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .upload-item {
+        padding: 18px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.10);
+        transition: 0.25s ease;
+    }
+
+    .upload-item:hover {
+        transform: translateY(-3px);
+        background: rgba(255,255,255,0.09);
+    }
+
+    .upload-item h4 {
+        font-size: 1.08rem;
+        margin-bottom: 8px;
+    }
+
+    .upload-item p {
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 12px;
+    }
+
+    .upload-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .upload-links a {
+        display: inline-block;
+        padding: 10px 14px;
+        border-radius: 14px;
+        text-decoration: none;
+        color: white;
+        background: linear-gradient(135deg, rgba(110,168,254,0.95), rgba(139,92,246,0.95));
+        box-shadow: 0 10px 22px rgba(110,168,254,0.18);
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .empty-state {
+        padding: 24px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.05);
+        border: 1px dashed rgba(255,255,255,0.16);
+        color: var(--muted);
+        line-height: 1.8;
+    }
+
+    @media (max-width: 980px) {
+        .dash-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .profile-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h2>Dashboard</h2>
-    <p>Welcome, <strong>{{ user.first_name|default:user.username }}</strong>.</p>
-    <p>You are logged in successfully.</p>
+<div class="dashboard-wrap">
+    <section class="dash-hero glass-card">
+        <div class="dash-badge">👋 Welcome back</div>
+        <h1 class="dash-title"><span>{{ role_title }}</span></h1>
+        <p class="dash-text">
+    {% if user.first_name or user.last_name %}
+        Hello, {{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}. This is your personal space to manage your academic identity, highlight your work, and keep your profile polished and professional.
+    {% else %}
+        Hello, {{ user.username }}. This is your personal space to manage your academic identity, highlight your work, and keep your profile polished and professional.
+    {% endif %}
+        </p>
 
-    <hr>
+        <div class="dash-actions">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
 
-    <h3>Next modules you can build</h3>
-    <ul>
-        <li>Student profile page</li>
-        <li>Add skills</li>
-        <li>Upload certificates</li>
-        <li>Teacher verification</li>
-        <li>Recruiter dashboard</li>
-    </ul>
+            {% if role_title == 'Student Dashboard' %}
+                {% if student_profile %}
+                    <a href="{% url 'update_student_profile' %}" class="btn btn-primary">Update Profile</a>
+                {% else %}
+                    <a href="{% url 'create_student_profile' %}" class="btn btn-primary">Create Profile</a>
+                {% endif %}
+                <a href="{% url 'upload_certificate_project' %}" class="btn btn-secondary">Upload Certificate / Link</a>
+            {% endif %}
+
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+    </section>
+
+    {% if role_title == 'Student Dashboard' %}
+    <section class="dash-grid">
+        <div class="dash-card">
+            <h2 class="card-title">Profile Information</h2>
+
+            {% if student_profile %}
+                <div class="profile-top">
+                    {% if student_profile.profile_picture %}
+                        <img src="{{ student_profile.profile_picture.url }}" alt="Student Picture" class="profile-photo">
+                    {% else %}
+                        <div class="profile-placeholder">
+                            {{ user.username|first|upper }}
+                        </div>
+                    {% endif %}
+
+                    <div class="profile-main">
+                        <h3>
+                            {% if user.first_name or user.last_name %}
+                             {{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}
+                            {% else %}
+                            {{ user.username }}
+                            {% endif %}
+                        </h3>
+                        <p>
+                            {{ student_profile.university|default:"Student at SkillSphere" }}
+                        </p>
+
+                        <div class="mini-tags">
+                            {% if student_profile.department %}<span>{{ student_profile.department }}</span>{% endif %}
+                            {% if student_profile.semester %}<span>Semester {{ student_profile.semester }}</span>{% endif %}
+                            {% if student_profile.cgpa %}<span>CGPA {{ student_profile.cgpa }}</span>{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <strong>Phone</strong>
+                        <span>{{ student_profile.phone|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Address</strong>
+                        <span>{{ student_profile.address|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>University</strong>
+                        <span>{{ student_profile.university|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Department</strong>
+                        <span>{{ student_profile.department|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Semester</strong>
+                        <span>{{ student_profile.semester|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Session</strong>
+                        <span>{{ student_profile.session|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Date of Birth</strong>
+                        <span>{{ student_profile.date_of_birth|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>CGPA</strong>
+                        <span>{{ student_profile.cgpa|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Extracurricular Activities</strong>
+                        <span>{{ student_profile.extracurricular_activities|default:"Not added" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Skills Summary</strong>
+                        <span>{{ student_profile.skills_summary|default:"Not added" }}</span>
+                    </div>
+                </div>
+
+                <div class="bio-box">
+                    <strong>Bio</strong>
+                    <p>{{ student_profile.bio|default:"No bio added yet." }}</p>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    Your profile has not been created yet. Start by creating your profile to make your dashboard feel complete and professional.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="dash-card">
+            <h2 class="card-title">Certificates and Project Links</h2>
+
+            {% if uploads %}
+                <div class="upload-list">
+                    {% for item in uploads %}
+                        <div class="upload-item">
+                            <h4>{{ item.title }}</h4>
+                            <p>{{ item.description|default:"No description added." }}</p>
+
+                            <div class="upload-links">
+                                {% if item.certificate_file %}
+                                    <a href="{{ item.certificate_file.url }}" target="_blank">View Certificate</a>
+                                {% endif %}
+                                {% if item.project_link %}
+                                    <a href="{{ item.project_link }}" target="_blank">Open Project Link</a>
+                                {% endif %}
+                            </div>
+
+                            <form method="post" action="{% url 'delete_certificate_project' item.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    No certificates or project links uploaded yet. Add your work here to make your profile stronger and more credible.
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
 </div>
 {% endblock %}

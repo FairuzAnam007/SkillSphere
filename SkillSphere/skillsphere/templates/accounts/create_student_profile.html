@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Student Profile{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card" style="max-width: 800px;">
+        <div class="auth-badge">🎓 Create Student Profile</div>
+        <h1 class="auth-title">Build Your Profile</h1>
+        <p class="auth-text">Fill in your academic details to get started.</p>
+
+        <form method="post" enctype="multipart/form-data" class="form-grid">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Create Profile</button>
+                <a href="{% url 'student_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+<style>
+    .auth-card { max-width: 800px; }
+    .field-group input,
+    .field-group textarea,
+    .field-group select {
+        width: 100%;
+        background: rgba(255,255,255,0.08);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 16px;
+        padding: 13px 16px;
+        outline: none;
+        font-size: 0.96rem;
+        font-family: inherit;
+    }
+    .field-group textarea { min-height: 90px; resize: vertical; }
+    .field-group select option { background: #0d1b2a; }
+</style>
+{% endblock %}

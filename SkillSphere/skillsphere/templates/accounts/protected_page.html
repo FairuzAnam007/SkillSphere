@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | SkillSphere{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card" style="text-align: center;">
+        <div class="auth-badge">🔒 Protected Area</div>
+        <h1 class="auth-title">{{ page_title }}</h1>
+        <p class="auth-text">
+            You have successfully accessed this role-protected page.
+        </p>
+        <div class="form-actions" style="justify-content: center;">
+            <a href="{% url 'role_redirect' %}" class="btn btn-primary">Go to Dashboard</a>
+            <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

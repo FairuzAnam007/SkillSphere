@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Item{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card" style="max-width: 520px; text-align: center;">
+        <div class="auth-badge">🗑️ Confirm Delete</div>
+        <h1 class="auth-title" style="font-size: 2rem;">Delete Item?</h1>
+        <p class="auth-text">
+            Are you sure you want to delete
+            <strong style="color: var(--text);">{{ item.title }}</strong>?
+            This action cannot be undone.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-actions" style="justify-content: center;">
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                <a href="{% url 'student_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
