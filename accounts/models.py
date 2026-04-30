@@ -34,7 +34,6 @@ class StudentProfile(models.Model):
     semester = models.CharField(max_length=50, blank=True)
     session = models.CharField(max_length=50, blank=True)
     cgpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-
     extracurricular_activities = models.TextField(blank=True)
     skills_summary = models.TextField(blank=True)
 
