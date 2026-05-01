@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Recruiter Dashboard | SkillSphere{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card" style="max-width: 850px;">
+        <div class="auth-badge">💼 Recruiter Panel</div>
+
+        <h1 class="auth-title">Recruiter Dashboard</h1>
+
+        <p class="auth-text">
+            Browse verified student skills, review academic profiles, and find suitable candidates for recruitment opportunities.
+        </p>
+
+        <div class="form-actions">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Back Home</a>
+
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

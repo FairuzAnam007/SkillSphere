@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Skill{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card">
+        <h1 class="auth-title">Delete Skill</h1>
+        <p class="auth-text">Are you sure you want to delete "{{ skill.name }}"?</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a href="{% url 'student_dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Access Denied | SkillSphere{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="glass-card auth-card">
+        <div class="auth-badge">⛔ Unauthorized</div>
+        <h1 class="auth-title">Access Denied</h1>
+        <p class="auth-text">
+            You do not have permission to access this page.
+        </p>
+        <div class="form-actions">
+            <a href="{% url 'home' %}" class="btn btn-primary">Go Home</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

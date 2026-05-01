@@ -1,0 +1,633 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard | SkillSphere{% endblock %}
+
+{% block extra_css %}
+<style>
+    .teacher-wrap {
+        width: min(1180px, calc(100% - 32px));
+        margin: 30px auto 60px;
+        display: grid;
+        gap: 24px;
+    }
+
+    .teacher-hero {
+        padding: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .teacher-hero::after {
+        content: "";
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        right: -80px;
+        top: -90px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent 70%);
+        pointer-events: none;
+    }
+
+    .teacher-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .teacher-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(110, 168, 254, 0.14);
+        border: 1px solid rgba(110, 168, 254, 0.22);
+        color: #dbeafe;
+        font-size: 0.88rem;
+        font-weight: 700;
+        margin-bottom: 14px;
+    }
+
+    .teacher-hero h1 {
+        font-size: clamp(2.1rem, 4vw, 3.5rem);
+        line-height: 1;
+        margin-bottom: 12px;
+        font-weight: 900;
+        color: #f2f7ff;
+    }
+
+    .teacher-hero p {
+        max-width: 720px;
+        color: #c8d6ec;
+        font-size: 1.02rem;
+        line-height: 1.7;
+    }
+
+    .teacher-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 2;
+    }
+
+    .dash-btn {
+        border: 0;
+        text-decoration: none;
+        padding: 13px 20px;
+        border-radius: 16px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.95rem;
+    }
+
+    .dash-btn:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.07);
+    }
+
+    .dash-btn.primary {
+        background: linear-gradient(135deg, #6ea8fe, #8b5cf6);
+        box-shadow: 0 18px 35px rgba(110, 168, 254, 0.22);
+    }
+
+    .dash-btn.soft {
+        background: rgba(255, 255, 255, 0.09);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: #eaf2ff;
+    }
+
+    .dash-btn.danger {
+        background: linear-gradient(135deg, #fb7185, #ef4444);
+    }
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .stat-card {
+        padding: 22px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+    }
+
+    .stat-card span {
+        display: block;
+        color: #aebbd2;
+        font-size: 0.86rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .stat-card strong {
+        font-size: 2rem;
+        color: #ffffff;
+    }
+
+    .teacher-section {
+        padding: 28px;
+    }
+
+    .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+        font-size: 1.45rem;
+        font-weight: 850;
+        color: #f3f7ff;
+    }
+
+    .section-tag {
+        font-size: 0.78rem;
+        font-weight: 800;
+        padding: 7px 11px;
+        border-radius: 999px;
+        color: #cde2ff;
+        background: rgba(110, 168, 254, 0.12);
+        border: 1px solid rgba(110, 168, 254, 0.18);
+    }
+
+    .empty-state {
+        padding: 22px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.055);
+        border: 1px dashed rgba(255, 255, 255, 0.16);
+        color: #b8c6dc;
+        line-height: 1.6;
+    }
+
+    .table-box {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+    }
+
+    .table-box table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 760px;
+    }
+
+    .table-box th,
+    .table-box td {
+        padding: 15px 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+        color: #dce8fb;
+        vertical-align: middle;
+    }
+
+    .table-box th {
+        background: rgba(255, 255, 255, 0.08);
+        color: #f2f7ff;
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table-box tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-box a {
+        color: #9cc7ff;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .mini-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-small {
+        padding: 9px 13px;
+        border-radius: 12px;
+        border: 0;
+        color: white;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        font-size: 0.84rem;
+    }
+
+    .btn-small.approve {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+
+    .btn-small.reject {
+        background: linear-gradient(135deg, #fb7185, #ef4444);
+    }
+
+    .student-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .student-card,
+    .log-card {
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.13);
+    }
+
+    .student-card h3 {
+        color: #ffffff;
+        margin-bottom: 10px;
+    }
+
+    .student-card p,
+    .log-card p {
+        color: #c4d1e6;
+        line-height: 1.6;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-weight: 850;
+        font-size: 0.78rem;
+        text-transform: capitalize;
+    }
+
+    .status-badge.approved {
+        background: rgba(34, 197, 94, 0.14);
+        color: #bbf7d0;
+        border: 1px solid rgba(34, 197, 94, 0.24);
+    }
+
+    .status-badge.rejected {
+        background: rgba(239, 68, 68, 0.14);
+        color: #fecaca;
+        border: 1px solid rgba(239, 68, 68, 0.24);
+    }
+
+    .status-badge.pending {
+        background: rgba(251, 191, 36, 0.14);
+        color: #fde68a;
+        border: 1px solid rgba(251, 191, 36, 0.24);
+    }
+
+    .log-list {
+        display: grid;
+        gap: 14px;
+    }
+
+    .small-text {
+        color: #91a4c2 !important;
+        font-size: 0.86rem;
+        margin-top: 8px;
+    }
+
+    .message-box {
+        padding: 16px 20px;
+        border-radius: 18px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.20);
+        color: #dcfce7;
+    }
+
+    @media (max-width: 900px) {
+        .teacher-hero {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .dashboard-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .student-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .dashboard-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .teacher-section,
+        .teacher-hero {
+            padding: 22px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="teacher-wrap">
+
+    <section class="glass-card teacher-hero">
+        <div class="teacher-hero-content">
+            <div class="teacher-badge">Teacher Panel</div>
+            <h1>Teacher Dashboard</h1>
+            <p>
+                Manage student mentoring connections, verify skills, assign proficiency levels,
+                and maintain clear verification records.
+            </p>
+        </div>
+
+        <div class="teacher-actions">
+            <a href="{% url 'home' %}" class="dash-btn soft">Home</a>
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dash-btn danger">Logout</button>
+            </form>
+        </div>
+    </section>
+
+    {% if messages %}
+        <div class="message-box">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <span>Pending Connections</span>
+            <strong>{{ pending_mentorship_requests|length }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Connected Students</span>
+            <strong>{{ accepted_mentorship_requests|length }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Pending Verifications</span>
+            <strong>{{ pending_verification_requests|length }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Completed Verifications</span>
+            <strong>{{ completed_verification_requests|length }}</strong>
+        </div>
+    </div>
+
+    <section class="glass-card teacher-section">
+        <div class="section-head">
+            <h2>Pending Student Connection Requests</h2>
+            <span class="section-tag">Mentorship</span>
+        </div>
+
+        {% if pending_mentorship_requests %}
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Message</th>
+                            <th>Requested On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for req in pending_mentorship_requests %}
+                            <tr>
+                                <td>
+                                    {% if req.student.first_name or req.student.last_name %}
+                                        {{ req.student.first_name }} {{ req.student.last_name }}
+                                    {% else %}
+                                        {{ req.student.username }}
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ req.message|default:"No message" }}</td>
+                                <td>{{ req.created_at|date:"d M Y" }}</td>
+
+                                <td>
+                                    <div class="mini-actions">
+                                        <form method="post" action="{% url 'respond_mentorship_request' req.pk 'accept' %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-small approve">Accept</button>
+                                        </form>
+
+                                        <form method="post" action="{% url 'respond_mentorship_request' req.pk 'reject' %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-small reject">Reject</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">No pending connection requests.</div>
+        {% endif %}
+    </section>
+
+    <section class="glass-card teacher-section">
+        <div class="section-head">
+            <h2>Connected Students</h2>
+            <span class="section-tag">Active Links</span>
+        </div>
+
+        {% if accepted_mentorship_requests %}
+            <div class="student-grid">
+                {% for req in accepted_mentorship_requests %}
+                    <div class="student-card">
+                        <h3>
+                            {% if req.student.first_name or req.student.last_name %}
+                                {{ req.student.first_name }} {{ req.student.last_name }}
+                            {% else %}
+                                {{ req.student.username }}
+                            {% endif %}
+                        </h3>
+
+                        <p><strong>Status:</strong> Connected</p>
+                        <p><strong>Connected on:</strong> {{ req.responded_at|date:"d M Y" }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">No connected students yet.</div>
+        {% endif %}
+    </section>
+
+    <section class="glass-card teacher-section">
+        <div class="section-head">
+            <h2>Pending Skill Verification Requests</h2>
+            <span class="section-tag">Review Queue</span>
+        </div>
+
+        {% if pending_verification_requests %}
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Skill</th>
+                            <th>Category</th>
+                            <th>Proof</th>
+                            <th>Message</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for req in pending_verification_requests %}
+                            <tr>
+                                <td>
+                                    {% if req.student.first_name or req.student.last_name %}
+                                        {{ req.student.first_name }} {{ req.student.last_name }}
+                                    {% else %}
+                                        {{ req.student.username }}
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ req.skill.name }}</td>
+                                <td>{{ req.skill.category|default:"Not selected" }}</td>
+
+                                <td>
+                                    {% if req.skill.proof_file %}
+                                        <a href="{{ req.skill.proof_file.url }}" target="_blank">File</a>
+                                    {% endif %}
+
+                                    {% if req.skill.proof_link %}
+                                        <a href="{{ req.skill.proof_link }}" target="_blank">Link</a>
+                                    {% endif %}
+
+                                    {% if not req.skill.proof_file and not req.skill.proof_link %}
+                                        No proof
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ req.message|default:"No message" }}</td>
+
+                                <td>
+                                    <div class="mini-actions">
+                                        <a href="{% url 'approve_skill_verification' req.pk %}" class="btn-small approve">Approve</a>
+                                        <a href="{% url 'reject_skill_verification' req.pk %}" class="btn-small reject">Reject</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">No pending skill verification requests.</div>
+        {% endif %}
+    </section>
+
+    <section class="glass-card teacher-section">
+        <div class="section-head">
+            <h2>Completed Verification Requests</h2>
+            <span class="section-tag">History</span>
+        </div>
+
+        {% if completed_verification_requests %}
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Skill</th>
+                            <th>Status</th>
+                            <th>Level</th>
+                            <th>Feedback</th>
+                            <th>Responded On</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for req in completed_verification_requests %}
+                            <tr>
+                                <td>
+                                    {% if req.student.first_name or req.student.last_name %}
+                                        {{ req.student.first_name }} {{ req.student.last_name }}
+                                    {% else %}
+                                        {{ req.student.username }}
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ req.skill.name }}</td>
+
+                                <td>
+                                    <span class="status-badge {{ req.status }}">
+                                        {{ req.get_status_display }}
+                                    </span>
+                                </td>
+
+                                <td>{{ req.skill.proficiency_level|default:"Not assigned" }}</td>
+                                <td>{{ req.feedback|default:"N/A" }}</td>
+                                <td>{{ req.responded_at|date:"d M Y, h:i A" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">No completed requests yet.</div>
+        {% endif %}
+    </section>
+
+    <section class="glass-card teacher-section">
+        <div class="section-head">
+            <h2>Verification Activity Logs</h2>
+            <span class="section-tag">Audit Trail</span>
+        </div>
+
+        {% if logs %}
+            <div class="log-list">
+                {% for log in logs %}
+                    <div class="log-card">
+                        <p><strong>{{ log.get_action_display }}</strong></p>
+
+                        {% if log.student %}
+                            <p>Student: {{ log.student.username }}</p>
+                        {% endif %}
+
+                        {% if log.teacher %}
+                            <p>Teacher: {{ log.teacher.username }}</p>
+                        {% endif %}
+
+                        {% if log.skill %}
+                            <p>Skill: {{ log.skill.name }}</p>
+                        {% else %}
+                            <p>Skill: N/A</p>
+                        {% endif %}
+
+                        <p>{{ log.note|default:"No note" }}</p>
+                        <p class="small-text">{{ log.created_at|date:"d M Y, h:i A" }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">No activity logs found.</div>
+        {% endif %}
+    </section>
+
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.urls import path, reverse_lazy
+from django.urls import path
 from django.contrib.auth.views import (
     LogoutView,
     PasswordResetView,
@@ -6,76 +6,88 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView,
     PasswordResetCompleteView,
 )
-from .views import (
-    home,
-    signup_view,
-    CustomLoginView,
-    role_redirect_view,
-    student_dashboard,
-    teacher_dashboard,
-    recruiter_dashboard,
-    admin_dashboard,
-    create_student_profile,
-    update_student_profile,
-    upload_certificate_project,
-    delete_certificate_project,
-    student_only_page,
-    teacher_only_page,
-    recruiter_only_page,
-)
+
+from . import views
+
 
 urlpatterns = [
-    path('', home, name='home'),
-    path('signup/', signup_view, name='signup'),
-    path('login/', CustomLoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path("", views.home, name="home"),
 
-    path('redirect-dashboard/', role_redirect_view, name='role_redirect'),
+    path("signup/", views.signup_view, name="signup"),
+    path("login/", views.CustomLoginView.as_view(), name="login"),
+    path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
 
-    path('dashboard/student/', student_dashboard, name='student_dashboard'),
-    path('dashboard/teacher/', teacher_dashboard, name='teacher_dashboard'),
-    path('dashboard/recruiter/', recruiter_dashboard, name='recruiter_dashboard'),
-    path('dashboard/admin/', admin_dashboard, name='admin_dashboard'),
+    path("dashboard/", views.role_redirect, name="role_redirect"),
 
-    path('profile/create/', create_student_profile, name='create_student_profile'),
-    path('profile/update/', update_student_profile, name='update_student_profile'),
-    path('profile/upload/', upload_certificate_project, name='upload_certificate_project'),
-    path('profile/upload/delete/<int:pk>/', delete_certificate_project, name='delete_certificate_project'),
+    # Backup old URL, so /redirect-dashboard/ will not show 404
+    path("redirect-dashboard/", views.role_redirect, name="redirect_dashboard"),
 
-    path('student-page/', student_only_page, name='student_only_page'),
-    path('teacher-page/', teacher_only_page, name='teacher_only_page'),
-    path('recruiter-page/', recruiter_only_page, name='recruiter_only_page'),
+    path("dashboard/student/", views.student_dashboard, name="student_dashboard"),
+    path("dashboard/teacher/", views.teacher_dashboard, name="teacher_dashboard"),
+    path("dashboard/recruiter/", views.recruiter_dashboard, name="recruiter_dashboard"),
+
+    path("profile/create/", views.create_student_profile, name="create_student_profile"),
+    path("profile/update/", views.update_student_profile, name="update_student_profile"),
+    path("profile/upload/", views.upload_certificate_project, name="upload_certificate_project"),
+    path(
+        "profile/certificate/<int:pk>/delete/",
+        views.delete_certificate_project,
+        name="delete_certificate_project",
+    ),
+
+    path("skills/add/", views.add_skill, name="add_skill"),
+    path("skills/<int:pk>/edit/", views.edit_skill, name="edit_skill"),
+    path("skills/<int:pk>/delete/", views.delete_skill, name="delete_skill"),
+
+    path("mentorship/request/", views.request_teacher_connection, name="request_teacher_connection"),
+    path(
+        "mentorship/respond/<int:pk>/<str:action>/",
+        views.respond_mentorship_request,
+        name="respond_mentorship_request",
+    ),
 
     path(
-        'password-reset/',
+        "verification/request/<int:skill_id>/",
+        views.request_skill_verification,
+        name="request_skill_verification",
+    ),
+    path(
+        "verification/approve/<int:request_id>/",
+        views.approve_skill_verification,
+        name="approve_skill_verification",
+    ),
+    path(
+        "verification/reject/<int:request_id>/",
+        views.reject_skill_verification,
+        name="reject_skill_verification",
+    ),
+
+    path(
+        "password-reset/",
         PasswordResetView.as_view(
-            template_name='accounts/password_reset.html',
-            email_template_name='accounts/password_reset_email.html',
-            subject_template_name='accounts/password_reset_subject.txt',
-            success_url=reverse_lazy('password_reset_done'),
+            template_name="accounts/password_reset.html",
+            email_template_name="accounts/password_reset_email.html",
+            subject_template_name="accounts/password_reset_subject.txt",
+            success_url="/password-reset/done/",
         ),
-        name='password_reset'
+        name="password_reset",
     ),
     path(
-        'password-reset/done/',
-        PasswordResetDoneView.as_view(
-            template_name='accounts/password_reset_done.html'
-        ),
-        name='password_reset_done'
+        "password-reset/done/",
+        PasswordResetDoneView.as_view(template_name="accounts/password_reset_done.html"),
+        name="password_reset_done",
     ),
     path(
-        'reset/<uidb64>/<token>/',
+        "password-reset-confirm/<uidb64>/<token>/",
         PasswordResetConfirmView.as_view(
-            template_name='accounts/password_reset_confirm.html',
-            success_url=reverse_lazy('password_reset_complete')
+            template_name="accounts/password_reset_confirm.html",
+            success_url="/password-reset-complete/",
         ),
-        name='password_reset_confirm'
+        name="password_reset_confirm",
     ),
     path(
-        'reset/done/',
-        PasswordResetCompleteView.as_view(
-            template_name='accounts/password_reset_complete.html'
-        ),
-        name='password_reset_complete'
+        "password-reset-complete/",
+        PasswordResetCompleteView.as_view(template_name="accounts/password_reset_complete.html"),
+        name="password_reset_complete",
     ),
 ]

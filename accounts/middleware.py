@@ -1,21 +1,11 @@
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.core.exceptions import PermissionDenied
+
+from .models import UserProfile
 
 
 class RolePermissionMiddleware:
-    ROLE_PROTECTED_URLS = {
-        'student_dashboard': ['student'],
-        'teacher_dashboard': ['teacher'],
-        'recruiter_dashboard': ['recruiter'],
-        'admin_dashboard': ['admin'],
-        'student_only_page': ['student'],
-        'teacher_only_page': ['teacher'],
-        'recruiter_only_page': ['recruiter'],
-        'create_student_profile': ['student'],
-        'update_student_profile': ['student'],
-        'upload_certificate_project': ['student'],
-        'delete_certificate_project': ['student'],
-    }
-
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -26,21 +16,44 @@ class RolePermissionMiddleware:
         if not request.user.is_authenticated:
             return None
 
-        resolver_match = getattr(request, 'resolver_match', None)
-        url_name = resolver_match.url_name if resolver_match else None
-
-        if not url_name or url_name not in self.ROLE_PROTECTED_URLS:
-            return None
-
-        allowed_roles = self.ROLE_PROTECTED_URLS[url_name]
-
         if request.user.is_superuser:
             return None
 
-        if not hasattr(request.user, 'profile'):
-            raise PermissionDenied("No profile assigned.")
+        path = request.path
 
-        if request.user.profile.role not in allowed_roles:
-            raise PermissionDenied("You are not authorized to access this page.")
+        ignored_paths = [
+            reverse("home"),
+            reverse("logout"),
+            reverse("role_redirect"),
+        ]
+
+        if path in ignored_paths:
+            return None
+
+        profile, created = UserProfile.objects.get_or_create(
+            user=request.user,
+            defaults={"role": "student"},
+        )
+
+        if path.startswith("/dashboard/student/") and profile.role != "student":
+            raise PermissionDenied("Only students can access student dashboard.")
+
+        if path.startswith("/dashboard/teacher/") and profile.role != "teacher":
+            raise PermissionDenied("Only teachers can access teacher dashboard.")
+
+        if path.startswith("/skills/") and profile.role != "student":
+            raise PermissionDenied("Only students can manage skills.")
+
+        if path.startswith("/profile/") and profile.role != "student":
+            raise PermissionDenied("Only students can manage profile.")
+
+        if path.startswith("/mentorship/request/") and profile.role != "student":
+            raise PermissionDenied("Only students can request mentoring.")
+
+        if path.startswith("/mentorship/respond/") and profile.role != "teacher":
+            raise PermissionDenied("Only teachers can respond to mentoring requests.")
+
+        if path.startswith("/verification/") and profile.role not in ["student", "teacher"]:
+            raise PermissionDenied("Only students and teachers can access verification.")
 
         return None
