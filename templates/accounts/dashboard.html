@@ -89,6 +89,10 @@
         box-shadow: 0 18px 45px rgba(0,0,0,0.16);
     }
 
+    .full-span {
+        grid-column: 1 / -1;
+    }
+
     .card-title {
         font-size: 1.35rem;
         font-weight: 800;
@@ -144,7 +148,8 @@
         flex-wrap: wrap;
     }
 
-    .mini-tags span {
+    .mini-tags span,
+    .skill-chip {
         padding: 9px 14px;
         border-radius: 999px;
         background: rgba(255,255,255,0.07);
@@ -200,12 +205,14 @@
         margin: 0;
     }
 
-    .upload-list {
+    .upload-list,
+    .skills-grid {
         display: grid;
         gap: 16px;
     }
 
-    .upload-item {
+    .upload-item,
+    .skill-item {
         padding: 18px;
         border-radius: 22px;
         background: rgba(255,255,255,0.07);
@@ -213,23 +220,27 @@
         transition: 0.25s ease;
     }
 
-    .upload-item:hover {
+    .upload-item:hover,
+    .skill-item:hover {
         transform: translateY(-3px);
         background: rgba(255,255,255,0.09);
     }
 
-    .upload-item h4 {
+    .upload-item h4,
+    .skill-item h4 {
         font-size: 1.08rem;
         margin-bottom: 8px;
     }
 
-    .upload-item p {
+    .upload-item p,
+    .skill-item p {
         color: var(--muted);
         line-height: 1.7;
         margin-bottom: 12px;
     }
 
-    .upload-links {
+    .upload-links,
+    .skill-actions {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
@@ -246,6 +257,15 @@
         box-shadow: 0 10px 22px rgba(110,168,254,0.18);
         font-size: 0.9rem;
         font-weight: 700;
+    }
+
+    .skill-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
     }
 
     .empty-state {
@@ -281,12 +301,13 @@
     <section class="dash-hero glass-card">
         <div class="dash-badge">👋 Welcome back</div>
         <h1 class="dash-title"><span>{{ role_title }}</span></h1>
+
         <p class="dash-text">
-    {% if user.first_name or user.last_name %}
-        Hello, {{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}. This is your personal space to manage your academic identity, highlight your work, and keep your profile polished and professional.
-    {% else %}
-        Hello, {{ user.username }}. This is your personal space to manage your academic identity, highlight your work, and keep your profile polished and professional.
-    {% endif %}
+            {% if user.first_name or user.last_name %}
+                Hello, {{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}. This is your personal space to manage your academic identity, highlight your work, and keep your profile polished and professional.
+            {% else %}
+                Hello, {{ user.username }}. This is your personal space to manage your academic identity, highlight your work, and keep your profile polished and professional.
+            {% endif %}
         </p>
 
         <div class="dash-actions">
@@ -299,6 +320,7 @@
                     <a href="{% url 'create_student_profile' %}" class="btn btn-primary">Create Profile</a>
                 {% endif %}
                 <a href="{% url 'upload_certificate_project' %}" class="btn btn-secondary">Upload Certificate / Link</a>
+                <a href="{% url 'add_skill' %}" class="btn btn-secondary">Add Skill</a>
             {% endif %}
 
             <form method="post" action="{% url 'logout' %}" style="display:inline;">
@@ -326,14 +348,13 @@
                     <div class="profile-main">
                         <h3>
                             {% if user.first_name or user.last_name %}
-                             {{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}
+                                {{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}
                             {% else %}
-                            {{ user.username }}
+                                {{ user.username }}
                             {% endif %}
                         </h3>
-                        <p>
-                            {{ student_profile.university|default:"Student at SkillSphere" }}
-                        </p>
+
+                        <p>{{ student_profile.university|default:"Student at SkillSphere" }}</p>
 
                         <div class="mini-tags">
                             {% if student_profile.department %}<span>{{ student_profile.department }}</span>{% endif %}
@@ -426,6 +447,40 @@
             {% else %}
                 <div class="empty-state">
                     No certificates or project links uploaded yet. Add your work here to make your profile stronger and more credible.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="dash-card full-span">
+            <h2 class="card-title">Skills</h2>
+
+            {% if skills %}
+                <div class="skills-grid">
+                    {% for skill in skills %}
+                        <div class="skill-item">
+                            <div class="skill-top">
+                                <h4>{{ skill.name }}</h4>
+                                <span class="skill-chip">{{ skill.category.name }}</span>
+                            </div>
+
+                            <p>{{ skill.description|default:"No description added." }}</p>
+
+                            <div class="upload-links">
+                                {% if skill.proof_file %}
+                                    <a href="{{ skill.proof_file.url }}" target="_blank">View Proof</a>
+                                {% endif %}
+                            </div>
+
+                            <div class="skill-actions">
+                                <a href="{% url 'edit_skill' skill.pk %}" class="btn btn-primary">Edit</a>
+                                <a href="{% url 'delete_skill' skill.pk %}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    No skills added yet. Add your skills to make your profile stronger and more impressive.
                 </div>
             {% endif %}
         </div>

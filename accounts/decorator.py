@@ -1,25 +1,29 @@
+from functools import wraps
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
+from .models import UserProfile
 
-def role_required(allowed_roles=None):
-    if allowed_roles is None:
-        allowed_roles = []
 
+def role_required(*allowed_roles):
     def decorator(view_func):
+        @wraps(view_func)
         @login_required
         def wrapper(request, *args, **kwargs):
-            user = request.user
-
-            if user.is_superuser:
+            if request.user.is_superuser:
                 return view_func(request, *args, **kwargs)
 
-            if not hasattr(user, 'profile'):
-                raise PermissionDenied("You do not have a profile assigned.")
+            profile, created = UserProfile.objects.get_or_create(
+                user=request.user,
+                defaults={"role": "student"},
+            )
 
-            if user.profile.role not in allowed_roles:
-                raise PermissionDenied("You are not authorized to access this page.")
+            if profile.role not in allowed_roles:
+                raise PermissionDenied("You are not allowed to access this page.")
 
             return view_func(request, *args, **kwargs)
+
         return wrapper
+
     return decorator
