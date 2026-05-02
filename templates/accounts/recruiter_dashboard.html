@@ -2,25 +2,573 @@
 
 {% block title %}Recruiter Dashboard | SkillSphere{% endblock %}
 
+{% block extra_css %}
+<style>
+    .dash-wrap {
+        display: grid;
+        gap: 22px;
+        padding-bottom: 40px;
+    }
+
+    .hero-card,
+    .dash-section {
+        padding: 28px;
+    }
+
+    .hero-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .eyebrow {
+        color: #9ec5ff;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.78rem;
+        margin-bottom: 8px;
+    }
+
+    .hero-card h1,
+    .card-title {
+        margin: 0;
+        color: #eef5ff;
+    }
+
+    .hero-card h1 {
+        font-size: clamp(2rem, 5vw, 3.8rem);
+        line-height: 1;
+        font-weight: 900;
+    }
+
+    .dash-text,
+    .card-subtitle {
+        color: #b6c4dd;
+        line-height: 1.7;
+        margin-top: 10px;
+    }
+
+    .action-row,
+    .section-head {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .section-head {
+        justify-content: space-between;
+        margin-bottom: 18px;
+    }
+
+    .btn-main,
+    .btn-soft,
+    .btn-danger,
+    .btn-main-small,
+    .btn-danger-small {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-weight: 800;
+        border-radius: 14px;
+        transition: 0.25s ease;
+    }
+
+    .btn-main,
+    .btn-soft,
+    .btn-danger {
+        padding: 13px 18px;
+    }
+
+    .btn-main {
+        color: white;
+        background: linear-gradient(135deg, #6ea8fe, #8b5cf6);
+        box-shadow: 0 14px 34px rgba(110, 168, 254, 0.22);
+    }
+
+    .btn-soft {
+        color: #eef5ff;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .btn-danger {
+        color: white;
+        background: linear-gradient(135deg, #fb7185, #ef4444);
+    }
+
+    .btn-main-small,
+    .btn-danger-small {
+        padding: 9px 12px;
+        font-size: 0.86rem;
+    }
+
+    .btn-main-small {
+        color: white;
+        background: linear-gradient(135deg, #6ea8fe, #8b5cf6);
+    }
+
+    .btn-danger-small {
+        color: white;
+        background: linear-gradient(135deg, #fb7185, #ef4444);
+    }
+
+    .btn-main:hover,
+    .btn-soft:hover,
+    .btn-danger:hover,
+    .btn-main-small:hover,
+    .btn-danger-small:hover {
+        transform: translateY(-2px);
+    }
+
+    .search-panel {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr 1fr auto;
+        gap: 12px;
+        align-items: end;
+    }
+
+    .field-group {
+        display: grid;
+        gap: 8px;
+    }
+
+    .field-group label {
+        color: #eaf2ff;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .field-group input,
+    .field-group select {
+        width: 100%;
+        padding: 13px 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.08);
+        color: white;
+        outline: none;
+    }
+
+    .check-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #dce9ff;
+        font-weight: 700;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .stat-card {
+        padding: 18px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .stat-card h3 {
+        font-size: 2rem;
+        margin: 0;
+    }
+
+    .stat-card p {
+        color: #b6c4dd;
+        margin-top: 6px;
+    }
+
+    .skill-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+    }
+
+    .skill-card,
+    .candidate-card {
+        padding: 20px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 18px 45px rgba(0,0,0,0.16);
+    }
+
+    .skill-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .skill-card h3,
+    .candidate-card h3 {
+        margin: 0;
+        color: #f2f7ff;
+    }
+
+    .skill-card p,
+    .candidate-card p {
+        color: #c5d3ea;
+        line-height: 1.6;
+        margin: 6px 0;
+    }
+
+    .table-box {
+        overflow-x: auto;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 780px;
+    }
+
+    th,
+    td {
+        padding: 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.10);
+        color: #dce9ff;
+    }
+
+    th {
+        color: #f2f7ff;
+        background: rgba(255,255,255,0.08);
+        font-size: 0.9rem;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.78rem;
+        background: rgba(255,255,255,0.10);
+        color: #eef5ff;
+    }
+
+    .status-badge.approved,
+    .status-badge.accepted,
+    .status-badge.active,
+    .status-badge.shortlisted {
+        background: rgba(34,197,94,0.15);
+        color: #86efac;
+        border: 1px solid rgba(34,197,94,0.25);
+    }
+
+    .status-badge.rejected {
+        background: rgba(239,68,68,0.15);
+        color: #fecaca;
+        border: 1px solid rgba(239,68,68,0.25);
+    }
+
+    .status-badge.applied,
+    .status-badge.reviewing {
+        background: rgba(110,168,254,0.15);
+        color: #bfdbfe;
+        border: 1px solid rgba(110,168,254,0.25);
+    }
+
+    .status-badge.closed {
+        background: rgba(148,163,184,0.15);
+        color: #cbd5e1;
+        border: 1px solid rgba(148,163,184,0.25);
+    }
+
+    .empty-box {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.06);
+        color: #b6c4dd;
+    }
+
+    .logout-inline {
+        display: inline;
+    }
+
+    .logout-inline button {
+        font-family: inherit;
+    }
+
+    @media (max-width: 900px) {
+        .hero-card,
+        .section-head {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .search-panel {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 560px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="auth-wrapper">
-    <div class="glass-card auth-card" style="max-width: 850px;">
-        <div class="auth-badge">💼 Recruiter Panel</div>
+<div class="dash-wrap">
 
-        <h1 class="auth-title">Recruiter Dashboard</h1>
+    <section class="glass-card hero-card">
+        <div>
+            <p class="eyebrow">Recruiter Panel</p>
+            <h1>Recruiter Dashboard</h1>
+            <p class="dash-text">
+                Search verified students, publish job or internship opportunities, review applications, and manage hiring status.
+            </p>
+        </div>
 
-        <p class="auth-text">
-            Browse verified student skills, review academic profiles, and find suitable candidates for recruitment opportunities.
-        </p>
+        <div class="action-row">
+            <a href="{% url 'create_job_post' %}" class="btn-main">Post Job / Internship</a>
+            <a href="{% url 'home' %}" class="btn-soft">Home</a>
 
-        <div class="form-actions">
-            <a href="{% url 'home' %}" class="btn btn-secondary">Back Home</a>
-
-            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            <form method="post" action="{% url 'logout' %}" class="logout-inline">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Logout</button>
+                <button type="submit" class="btn-danger">Logout</button>
             </form>
         </div>
-    </div>
-</section>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card glass-card">
+            <h3>{{ students|length }}</h3>
+            <p>Matching Students</p>
+        </div>
+
+        <div class="stat-card glass-card">
+            <h3>{{ job_posts|length }}</h3>
+            <p>Posted Jobs</p>
+        </div>
+
+        <div class="stat-card glass-card">
+            <h3>{{ applications|length }}</h3>
+            <p>Total Applications</p>
+        </div>
+
+
+    </section>
+
+    <section class="glass-card dash-section">
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">Search Students by Skill</h2>
+                <p class="card-subtitle">
+                    Filter students using skill keywords, verified skills, department, CGPA, and proficiency level.
+                </p>
+            </div>
+        </div>
+
+        <form method="get" class="search-panel">
+            <div class="field-group">
+                <label for="q">Keyword</label>
+                <input type="text" id="q" name="q" value="{{ query }}" placeholder="Python, Django, SQL, student name">
+            </div>
+
+            <div class="field-group">
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department" value="{{ department }}" placeholder="CSE">
+            </div>
+
+            <div class="field-group">
+                <label for="min_cgpa">Minimum CGPA</label>
+                <input type="number" step="0.01" id="min_cgpa" name="min_cgpa" value="{{ min_cgpa }}" placeholder="3.50">
+            </div>
+
+            <div class="field-group">
+                <label for="proficiency">Proficiency</label>
+                <input type="text" id="proficiency" name="proficiency" value="{{ proficiency }}" placeholder="Beginner, Intermediate">
+            </div>
+
+            <div>
+                <label class="check-box">
+                    <input type="checkbox" name="verified_only" {% if verified_only == "on" %}checked{% endif %}>
+                    Verified only
+                </label>
+
+                <button type="submit" class="btn-main" style="margin-top: 12px; width: 100%;">
+                    Search
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="glass-card dash-section">
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">Student Search Results</h2>
+                <p class="card-subtitle">
+                    Students matching your recruitment filters are shown here.
+                </p>
+            </div>
+        </div>
+
+        {% if students %}
+            <div class="skill-grid">
+                {% for student in students %}
+                    <div class="candidate-card">
+                        <h3>
+                            {% if student.user.first_name or student.user.last_name %}
+                                {{ student.user.first_name }} {{ student.user.last_name }}
+                            {% else %}
+                                {{ student.user.username }}
+                            {% endif %}
+                        </h3>
+
+                        <p><strong>Department:</strong> {{ student.department|default:"Not added" }}</p>
+                        <p><strong>University:</strong> {{ student.university|default:"Not added" }}</p>
+                        <p><strong>CGPA:</strong> {{ student.cgpa|default:"Not added" }}</p>
+                        <p><strong>Semester:</strong> {{ student.semester|default:"Not added" }}</p>
+
+                        <p><strong>Skills:</strong></p>
+                        {% if student.skills.all %}
+                            {% for skill in student.skills.all %}
+                                <span class="status-badge {% if skill.verification_status == 'approved' %}approved{% endif %}">
+                                    {{ skill.name }}
+                                    {% if skill.verification_status == "approved" %}
+                                        ✓
+                                    {% endif %}
+                                </span>
+                            {% endfor %}
+                        {% else %}
+                            <p>No skills added.</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">No matching students found.</div>
+        {% endif %}
+    </section>
+
+    <section class="glass-card dash-section">
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">Posted Jobs and Internships</h2>
+                <p class="card-subtitle">
+                    Manage all job and internship opportunities published by you.
+                </p>
+            </div>
+
+            <a href="{% url 'create_job_post' %}" class="btn-main">Post Job / Internship</a>
+        </div>
+
+        {% if job_posts %}
+            <div class="skill-grid">
+                {% for job in job_posts %}
+                    <div class="skill-card">
+                        <div class="skill-top">
+                            <h3>{{ job.title }}</h3>
+
+                            {% if job.is_active %}
+                                <span class="status-badge approved">Active</span>
+                            {% else %}
+                                <span class="status-badge closed">Closed</span>
+                            {% endif %}
+                        </div>
+
+                        <p><strong>Company:</strong> {{ job.company_name }}</p>
+                        <p><strong>Type:</strong> {{ job.get_job_type_display }}</p>
+                        <p><strong>Location:</strong> {{ job.location|default:"Not specified" }}</p>
+                        <p><strong>Required Skills:</strong> {{ job.required_skills }}</p>
+
+                        {% if job.deadline %}
+                            <p><strong>Deadline:</strong> {{ job.deadline|date:"d M Y" }}</p>
+                        {% endif %}
+
+                        <p>{{ job.description|truncatewords:28 }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">No job or internship has been posted yet.</div>
+        {% endif %}
+    </section>
+
+    <section class="glass-card dash-section">
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">Student Applications</h2>
+                <p class="card-subtitle">
+                    Review applications and update the current application status.
+                </p>
+            </div>
+        </div>
+
+        {% if applications %}
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Position</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                            <th>CV</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for application in applications %}
+                            <tr>
+                                <td>
+                                    {% if application.student.first_name or application.student.last_name %}
+                                        {{ application.student.first_name }} {{ application.student.last_name }}
+                                    {% else %}
+                                        {{ application.student.username }}
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ application.job.title }}</td>
+                                <td>{{ application.job.company_name }}</td>
+
+                                <td>
+                                    <span class="status-badge {{ application.status }}">
+                                        {{ application.get_status_display }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if application.cv_file %}
+                                        <a href="{{ application.cv_file.url }}" target="_blank">View CV</a>
+                                    {% else %}
+                                        No CV
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a href="{% url 'update_application_status' application.pk %}" class="btn-main-small">
+                                        Update Status
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-box">No student applications received yet.</div>
+        {% endif %}
+    </section>
+
+</div>
 {% endblock %}

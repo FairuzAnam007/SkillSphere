@@ -3,21 +3,27 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 from .models import (
-    UserProfile,
     StudentProfile,
     CertificateProject,
-    SkillCategory,
     Skill,
     MentorshipRequest,
     SkillVerificationRequest,
+    JobPost,
+    JobApplication,
 )
 
 
 class SignupForm(UserCreationForm):
-    first_name = forms.CharField(max_length=50, required=True)
-    last_name = forms.CharField(max_length=50, required=False)
+    ROLE_CHOICES = [
+        ("student", "Student"),
+        ("teacher", "Teacher"),
+        ("recruiter", "Recruiter"),
+    ]
+
+    first_name = forms.CharField(max_length=150, required=True)
+    last_name = forms.CharField(max_length=150, required=True)
     email = forms.EmailField(required=True)
-    role = forms.ChoiceField(choices=UserProfile.ROLE_CHOICES, required=True)
+    role = forms.ChoiceField(choices=ROLE_CHOICES, required=True)
 
     class Meta:
         model = User
@@ -34,51 +40,33 @@ class SignupForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        for field_name, field in self.fields.items():
-            if field_name == "role":
-                field.widget.attrs.update({"class": "form-control form-select"})
-            else:
-                field.widget.attrs.update({"class": "form-control"})
+        placeholders = {
+            "first_name": "Enter first name",
+            "last_name": "Enter last name",
+            "username": "Choose username",
+            "email": "Enter email",
+            "password1": "Enter password",
+            "password2": "Confirm password",
+        }
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-
-        user.first_name = self.cleaned_data.get("first_name")
-        user.last_name = self.cleaned_data.get("last_name")
-        user.email = self.cleaned_data.get("email")
-
-        if commit:
-            user.save()
-
-            UserProfile.objects.update_or_create(
-                user=user,
-                defaults={
-                    "role": self.cleaned_data.get("role", "student"),
-                    "is_locked": False,
-                    "failed_login_attempts": 0,
-                },
-            )
-
-        return user
+        for name, field in self.fields.items():
+            field.widget.attrs.update({"class": "form-control"})
+            if name in placeholders:
+                field.widget.attrs.update({"placeholder": placeholders[name]})
 
 
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Enter username",
-            }
-        )
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Enter username",
+        })
     )
-
     password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Enter password",
-            }
-        )
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control",
+            "placeholder": "Enter password",
+        })
     )
 
 
@@ -99,53 +87,37 @@ class StudentProfileForm(forms.ModelForm):
             "extracurricular_activities",
             "skills_summary",
         ]
-
         widgets = {
-            "date_of_birth": forms.DateInput(attrs={"type": "date"}),
-            "address": forms.Textarea(attrs={"rows": 3}),
-            "bio": forms.Textarea(attrs={"rows": 4}),
-            "extracurricular_activities": forms.Textarea(attrs={"rows": 3}),
-            "skills_summary": forms.Textarea(attrs={"rows": 3}),
+            "profile_picture": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "phone_number": forms.TextInput(attrs={"class": "form-control"}),
+            "address": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "date_of_birth": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "university": forms.TextInput(attrs={"class": "form-control"}),
+            "department": forms.TextInput(attrs={"class": "form-control"}),
+            "semester": forms.TextInput(attrs={"class": "form-control"}),
+            "session": forms.TextInput(attrs={"class": "form-control"}),
+            "cgpa": forms.NumberInput(attrs={"class": "form-control", "step": "0.01"}),
+            "bio": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
+            "extracurricular_activities": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "skills_summary": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control"})
 
 
 class CertificateProjectForm(forms.ModelForm):
     class Meta:
         model = CertificateProject
-        fields = ["title", "certificate_file", "project_link"]
-
+        fields = [
+            "title",
+            "certificate_file",
+            "project_link",
+            "description",
+        ]
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "Example: Django Certificate"}),
-            "project_link": forms.URLInput(attrs={"placeholder": "https://example.com/project"}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "certificate_file": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "project_link": forms.URLInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control"})
-
-
-class SkillCategoryForm(forms.ModelForm):
-    class Meta:
-        model = SkillCategory
-        fields = ["name", "description"]
-
-        widgets = {
-            "description": forms.Textarea(attrs={"rows": 3}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control"})
 
 
 class SkillForm(forms.ModelForm):
@@ -158,69 +130,59 @@ class SkillForm(forms.ModelForm):
             "proof_file",
             "proof_link",
         ]
-
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 4}),
-            "proof_link": forms.URLInput(attrs={"placeholder": "https://example.com/proof"}),
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "category": forms.Select(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
+            "proof_file": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "proof_link": forms.URLInput(attrs={"class": "form-control"}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control"})
 
 
 class MentorshipRequestForm(forms.ModelForm):
     teacher = forms.ModelChoiceField(
         queryset=User.objects.none(),
+        label="Teacher",
         empty_label="Select Teacher",
-        required=True,
+        widget=forms.Select(attrs={"class": "form-control"})
     )
 
     class Meta:
         model = MentorshipRequest
         fields = ["teacher", "message"]
-
         widgets = {
-            "message": forms.Textarea(
-                attrs={
-                    "rows": 4,
-                    "placeholder": "Write why you want mentoring from this teacher",
-                }
-            )
+            "message": forms.Textarea(attrs={
+                "class": "form-control",
+                "placeholder": "Write why you want mentoring from this teacher",
+                "rows": 4,
+            })
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["teacher"].queryset = User.objects.filter(
-            userprofile__role="teacher",
-            is_active=True,
-        ).order_by("first_name", "username")
-
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control"})
+            userprofile__role="teacher"
+        ).order_by("first_name", "last_name", "username")
 
 
 class SkillVerificationRequestForm(forms.ModelForm):
     teacher = forms.ModelChoiceField(
         queryset=User.objects.none(),
-        empty_label="Select connected teacher",
-        required=True,
+        label="Teacher",
+        empty_label="Select Connected Teacher",
+        widget=forms.Select(attrs={"class": "form-control"})
     )
 
     class Meta:
         model = SkillVerificationRequest
         fields = ["teacher", "message"]
-
         widgets = {
-            "message": forms.Textarea(
-                attrs={
-                    "rows": 4,
-                    "placeholder": "Write a short note about this skill proof",
-                }
-            )
+            "message": forms.Textarea(attrs={
+                "class": "form-control",
+                "placeholder": "Write a message for skill verification",
+                "rows": 4,
+            })
         }
 
     def __init__(self, *args, **kwargs):
@@ -228,55 +190,128 @@ class SkillVerificationRequestForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if student:
-            connected_teacher_ids = MentorshipRequest.objects.filter(
-                student=student,
-                status="accepted",
-            ).values_list("teacher_id", flat=True)
-
             self.fields["teacher"].queryset = User.objects.filter(
-                id__in=connected_teacher_ids,
-                is_active=True,
-            )
-
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control"})
+                received_mentorship_requests__student=student,
+                received_mentorship_requests__status="accepted",
+            ).distinct()
+        else:
+            self.fields["teacher"].queryset = User.objects.none()
 
 
 class ApproveSkillVerificationForm(forms.ModelForm):
-    proficiency_level = forms.ChoiceField(
-        choices=Skill.PROFICIENCY_CHOICES,
-        required=True,
-    )
-
     feedback = forms.CharField(
         required=False,
-        widget=forms.Textarea(
-            attrs={
-                "rows": 4,
-                "placeholder": "Optional feedback for student",
-            }
-        ),
+        widget=forms.Textarea(attrs={
+            "class": "form-control",
+            "placeholder": "Write feedback for the student",
+            "rows": 4,
+        })
     )
 
     class Meta:
         model = Skill
         fields = ["proficiency_level"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field in self.fields.values():
-            field.widget.attrs.update({"class": "form-control"})
+        widgets = {
+            "proficiency_level": forms.Select(attrs={"class": "form-control"})
+        }
 
 
 class RejectSkillVerificationForm(forms.Form):
     rejection_reason = forms.CharField(
+        label="Rejection Reason",
         required=True,
-        widget=forms.Textarea(
-            attrs={
-                "rows": 4,
-                "class": "form-control",
-                "placeholder": "Write reason for rejection",
-            }
-        ),
+        widget=forms.Textarea(attrs={
+            "class": "form-control",
+            "placeholder": "Write the reason for rejecting this skill",
+            "rows": 4,
+        })
     )
+
+
+class RecruiterSearchForm(forms.Form):
+    keyword = forms.CharField(required=False)
+    verified_only = forms.BooleanField(required=False)
+    department = forms.CharField(required=False)
+    min_cgpa = forms.DecimalField(required=False, max_digits=4, decimal_places=2)
+    proficiency_level = forms.ChoiceField(
+        required=False,
+        choices=[("", "Any Level")] + list(Skill.PROFICIENCY_LEVEL_CHOICES)
+    )
+
+
+class JobPostForm(forms.ModelForm):
+    class Meta:
+        model = JobPost
+        fields = [
+            "title",
+            "company_name",
+            "job_type",
+            "location",
+            "description",
+            "required_skills",
+            "deadline",
+            "is_active",
+        ]
+        widgets = {
+            "title": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Software Engineer Intern",
+            }),
+            "company_name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Company name",
+            }),
+            "job_type": forms.Select(attrs={"class": "form-control"}),
+            "location": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Dhaka / Remote",
+            }),
+            "description": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 5,
+                "placeholder": "Write job description, requirements, responsibilities",
+            }),
+            "required_skills": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Python, Django, SQL",
+            }),
+            "deadline": forms.DateInput(attrs={
+                "class": "form-control",
+                "type": "date",
+            }),
+            "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }
+
+
+class JobApplicationForm(forms.ModelForm):
+    class Meta:
+        model = JobApplication
+        fields = [
+            "cover_letter",
+            "cv_file",
+        ]
+        widgets = {
+            "cover_letter": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 5,
+                "placeholder": "Write a short cover letter",
+            }),
+            "cv_file": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        }
+
+
+class ApplicationStatusUpdateForm(forms.ModelForm):
+    class Meta:
+        model = JobApplication
+        fields = [
+            "status",
+            "recruiter_note",
+        ]
+        widgets = {
+            "status": forms.Select(attrs={"class": "form-control"}),
+            "recruiter_note": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Write recruiter note for the student",
+            }),
+        }
