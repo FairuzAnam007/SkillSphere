@@ -870,5 +870,91 @@
         {% endif %}
     </section>
 
+
+    <section class="dash-card full-span">
+    <div class="section-head">
+        <div>
+            <h2 class="card-title">Job and Internship Opportunities</h2>
+            <p class="card-subtitle">
+                Explore published job or internship opportunities and apply using your SkillSphere profile.
+            </p>
+        </div>
+
+        <a href="{% url 'job_list' %}" class="btn-main">View All Jobs</a>
+    </div>
+
+    {% if job_posts %}
+        <div class="certificate-grid">
+            {% for job in job_posts %}
+                <div class="certificate-item">
+                    <h4>{{ job.title }}</h4>
+
+                    <p>
+                        <strong>Company:</strong> {{ job.company_name }}<br>
+                        <strong>Location:</strong> {{ job.location|default:"Not specified" }}<br>
+                        <strong>Type:</strong> {{ job.get_job_type_display|default:job.job_type }}
+                    </p>
+
+                    <p>
+                        {{ job.description|truncatewords:35 }}
+                    </p>
+
+                    {% if job.deadline %}
+                        <p>
+                            <strong>Deadline:</strong> {{ job.deadline|date:"d M Y" }}
+                        </p>
+                    {% endif %}
+
+                    <div class="item-actions">
+                        <a href="{% url 'apply_job' job.pk %}" class="btn-main-small">Apply Now</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            No job or internship opportunities are available right now.
+        </div>
+    {% endif %}
+</section>
+
+<section class="dash-card full-span">
+    <h2 class="card-title">My Job Applications</h2>
+
+    {% if my_applications %}
+        <div class="request-grid">
+            {% for application in my_applications %}
+                <div class="request-item">
+                    <h4>{{ application.job.title }}</h4>
+
+                    <p>
+                        <strong>Company:</strong> {{ application.job.company_name }}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        <span class="status-pill {{ application.status }}">
+                            {{ application.get_status_display }}
+                        </span>
+                    </p>
+
+                    {% if application.recruiter_note %}
+                        <p>
+                            <strong>Recruiter Note:</strong> {{ application.recruiter_note }}
+                        </p>
+                    {% endif %}
+
+                    <p>
+                        <strong>Applied on:</strong> {{ application.applied_at|date:"d M Y, h:i A" }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            You have not applied for any job or internship yet.
+        </div>
+    {% endif %}
+</section>
 </div>
 {% endblock %}

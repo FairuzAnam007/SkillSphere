@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Job Opportunities | SkillSphere{% endblock %}
+
+{% block extra_css %}
+<style>
+    .job-page {
+        display: grid;
+        gap: 24px;
+        animation: fadeUp 0.8s ease;
+    }
+
+    .job-hero {
+        padding: 34px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    .job-hero h1 {
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        color: #f8fbff;
+        margin-bottom: 12px;
+    }
+
+    .job-hero p {
+        color: var(--muted);
+        max-width: 760px;
+        line-height: 1.7;
+    }
+
+    .job-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+    }
+
+    .job-card {
+        padding: 24px;
+        border-radius: 26px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.065)),
+            radial-gradient(circle at top right, rgba(110,168,254,0.16), transparent 35%);
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+        transition: 0.25s ease;
+    }
+
+    .job-card:hover {
+        transform: translateY(-5px);
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.075)),
+            radial-gradient(circle at top right, rgba(139,92,246,0.18), transparent 36%);
+    }
+
+    .job-card h3 {
+        font-size: 1.35rem;
+        color: #f8fbff;
+        margin-bottom: 10px;
+    }
+
+    .job-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 14px 0;
+    }
+
+    .job-meta span {
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: #dbeafe;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .job-card p {
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 10px 0;
+    }
+
+    .job-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+
+    .empty-state {
+        padding: 24px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: var(--muted);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="job-page">
+
+    <section class="glass-card job-hero">
+        <div>
+            <p class="eyebrow">Career Opportunities</p>
+            <h1>Jobs and Internships</h1>
+            <p>
+                Browse available opportunities posted by recruiters and apply directly using your SkillSphere profile.
+            </p>
+        </div>
+
+        <div class="action-row">
+            <a href="{% url 'student_dashboard' %}" class="btn-soft">Back to Dashboard</a>
+        </div>
+    </section>
+
+    {% if jobs %}
+        <div class="job-grid">
+            {% for job in jobs %}
+                <div class="job-card">
+                    <h3>{{ job.title }}</h3>
+
+                    <p>
+                        <strong>Company:</strong> {{ job.company_name }}<br>
+                        <strong>Location:</strong> {{ job.location|default:"Not specified" }}
+                    </p>
+
+                    <div class="job-meta">
+                        <span>{{ job.get_job_type_display|default:job.job_type }}</span>
+
+                        {% if job.deadline %}
+                            <span>Deadline: {{ job.deadline|date:"d M Y" }}</span>
+                        {% endif %}
+                    </div>
+
+                    <p>{{ job.description|truncatewords:45 }}</p>
+
+                    {% if job.required_skills %}
+                        <p>
+                            <strong>Required Skills:</strong> {{ job.required_skills }}
+                        </p>
+                    {% endif %}
+
+                    <div class="job-actions">
+                        <a href="{% url 'apply_job' job.pk %}" class="btn-main">Apply Now</a>
+                        <a href="{% url 'student_dashboard' %}" class="btn-soft">Dashboard</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            No job or internship posts are available right now.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

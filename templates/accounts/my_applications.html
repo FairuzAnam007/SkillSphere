@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}My Applications | SkillSphere{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+    <section class="glass-card hero-card">
+        <div>
+            <p class="eyebrow">Application Tracking</p>
+            <h1>My Job Applications</h1>
+
+            <p class="dash-text">
+                Track your submitted job and internship applications with current recruiter status.
+            </p>
+        </div>
+
+        <div class="action-row">
+            <a href="{% url 'student_dashboard' %}" class="btn-soft">Dashboard</a>
+            <a href="{% url 'job_list' %}" class="btn-main">Browse Jobs</a>
+        </div>
+    </section>
+
+    <section class="glass-card dash-section">
+        <h2 class="card-title">Application Status</h2>
+
+        {% if applications %}
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                            <th>Recruiter Note</th>
+                            <th>Applied At</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for application in applications %}
+                            <tr>
+                                <td>{{ application.job.title }}</td>
+                                <td>{{ application.job.company_name }}</td>
+                                <td>
+                                    <span class="status-badge {{ application.status }}">
+                                        {{ application.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ application.recruiter_note|default:"No note yet" }}</td>
+                                <td>{{ application.applied_at|date:"d M Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-box">You have not applied for any position yet.</div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

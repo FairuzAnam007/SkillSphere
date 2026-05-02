@@ -9,7 +9,6 @@ from django.contrib.auth.views import (
 
 from . import views
 
-
 urlpatterns = [
     path("", views.home, name="home"),
 
@@ -18,10 +17,6 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
 
     path("dashboard/", views.role_redirect, name="role_redirect"),
-
-    # Backup old URL, so /redirect-dashboard/ will not show 404
-    path("redirect-dashboard/", views.role_redirect, name="redirect_dashboard"),
-
     path("dashboard/student/", views.student_dashboard, name="student_dashboard"),
     path("dashboard/teacher/", views.teacher_dashboard, name="teacher_dashboard"),
     path("dashboard/recruiter/", views.recruiter_dashboard, name="recruiter_dashboard"),
@@ -60,6 +55,27 @@ urlpatterns = [
         "verification/reject/<int:request_id>/",
         views.reject_skill_verification,
         name="reject_skill_verification",
+    ),
+
+    path("jobs/", views.job_list, name="job_list"),
+    path("jobs/create/", views.create_job_post, name="create_job_post"),
+    path("jobs/<int:job_id>/apply/", views.apply_job, name="apply_job"),
+    path("applications/my/", views.my_applications, name="my_applications"),
+    path(
+        "applications/<int:pk>/status/",
+        views.update_application_status,
+        name="update_application_status",
+    ),
+
+    path(
+        "recruiter/shortlist/<int:student_profile_id>/",
+        views.save_shortlisted_candidate,
+        name="save_shortlisted_candidate",
+    ),
+    path(
+        "recruiter/shortlist/remove/<int:shortlist_id>/",
+        views.remove_shortlisted_candidate,
+        name="remove_shortlisted_candidate",
     ),
 
     path(

@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -17,7 +18,11 @@ from .forms import (
     SkillVerificationRequestForm,
     ApproveSkillVerificationForm,
     RejectSkillVerificationForm,
+    JobPostForm,
+    JobApplicationForm,
+    ApplicationStatusUpdateForm,
 )
+
 from .models import (
     UserProfile,
     StudentProfile,
@@ -26,8 +31,15 @@ from .models import (
     MentorshipRequest,
     SkillVerificationRequest,
     VerificationLog,
+    RecruiterShortlist,
+    JobPost,
+    JobApplication,
 )
 
+
+# =========================
+# Basic Pages
+# =========================
 
 def home(request):
     return render(request, "accounts/home.html")
@@ -36,6 +48,10 @@ def home(request):
 def permission_denied_view(request, exception=None):
     return render(request, "403.html", status=403)
 
+
+# =========================
+# Authentication
+# =========================
 
 def signup_view(request):
     if request.method == "POST":
@@ -81,7 +97,11 @@ def role_redirect(request):
 
     profile, created = UserProfile.objects.get_or_create(
         user=request.user,
-        defaults={"role": "student"},
+        defaults={
+            "role": "student",
+            "is_locked": False,
+            "failed_login_attempts": 0,
+        },
     )
 
     if profile.role == "student":
@@ -100,15 +120,18 @@ def role_redirect(request):
     return redirect("home")
 
 
-@login_required
-def recruiter_dashboard(request):
-    return render(request, "accounts/recruiter_dashboard.html")
-
+# =========================
+# Helper
+# =========================
 
 def get_student_profile(user):
-    profile, created = StudentProfile.objects.get_or_create(user=user)
-    return profile
+    student_profile, created = StudentProfile.objects.get_or_create(user=user)
+    return student_profile
 
+
+# =========================
+# Student Dashboard
+# =========================
 
 @login_required
 @role_required("student")
@@ -136,6 +159,18 @@ def student_dashboard(request):
         student=request.user
     ).select_related("skill", "teacher").order_by("-requested_at")
 
+    available_jobs = JobPost.objects.filter(
+        is_active=True
+    ).select_related("recruiter").order_by("-created_at")
+
+    applied_job_ids = JobApplication.objects.filter(
+        student=request.user
+    ).values_list("job_id", flat=True)
+
+    my_applications_list = JobApplication.objects.filter(
+        student=request.user
+    ).select_related("job").order_by("-applied_at")
+
     context = {
         "student_profile": student_profile,
         "certificates": certificates,
@@ -143,10 +178,17 @@ def student_dashboard(request):
         "mentorship_requests": mentorship_requests,
         "connected_teachers": connected_teachers,
         "verification_requests": verification_requests,
+        "available_jobs": available_jobs,
+        "applied_job_ids": applied_job_ids,
+        "my_applications_list": my_applications_list,
     }
 
     return render(request, "accounts/student_dashboard.html", context)
 
+
+# ========================
+# Teacher Dashboard
+# =========================
 
 @login_required
 @role_required("teacher")
@@ -167,23 +209,117 @@ def teacher_dashboard(request):
     ).select_related("skill", "student").order_by("-requested_at")
 
     completed_verification_requests = SkillVerificationRequest.objects.filter(
-        teacher=request.user,
-    ).exclude(status="pending").select_related("skill", "student").order_by("-responded_at")
+        teacher=request.user
+    ).exclude(status="pending").select_related(
+        "skill", "student"
+    ).order_by("-responded_at")
 
     logs = VerificationLog.objects.filter(
         teacher=request.user
-    ).select_related("actor", "student", "teacher", "skill").order_by("-created_at")[:20]
+    ).select_related(
+        "actor", "student", "teacher", "skill"
+    ).order_by("-created_at")[:20]
 
     context = {
         "pending_mentorship_requests": pending_mentorship_requests,
         "accepted_mentorship_requests": accepted_mentorship_requests,
         "pending_verification_requests": pending_verification_requests,
         "completed_verification_requests": completed_verification_requests,
+
+        # These aliases are added so older teacher_dashboard.html also works
+        "pending_connections": pending_mentorship_requests,
+        "accepted_connections": accepted_mentorship_requests,
+        "pending_skill_requests": pending_verification_requests,
+        "completed_skill_requests": completed_verification_requests,
+
         "logs": logs,
     }
 
     return render(request, "accounts/teacher_dashboard.html", context)
 
+
+# =========================
+# Recruiter Dashboard
+# =========================
+
+@login_required
+@role_required("recruiter")
+def recruiter_dashboard(request):
+    query = request.GET.get("q", "").strip()
+    verified_only = request.GET.get("verified_only", "")
+    department = request.GET.get("department", "").strip()
+    min_cgpa = request.GET.get("min_cgpa", "").strip()
+    proficiency = request.GET.get("proficiency", "").strip()
+
+    students = StudentProfile.objects.select_related("user").prefetch_related(
+        "skills",
+        "skills__category",
+    ).all()
+
+    if query:
+        students = students.filter(
+            Q(user__username__icontains=query)
+            | Q(user__first_name__icontains=query)
+            | Q(user__last_name__icontains=query)
+            | Q(skills__name__icontains=query)
+            | Q(skills__category__name__icontains=query)
+        ).distinct()
+
+    if verified_only == "on":
+        students = students.filter(
+            skills__verification_status="approved"
+        ).distinct()
+
+    if department:
+        students = students.filter(
+            department__icontains=department
+        )
+
+    if min_cgpa:
+        try:
+            students = students.filter(cgpa__gte=float(min_cgpa))
+        except ValueError:
+            messages.error(request, "CGPA filter must be a valid number.")
+
+    if proficiency:
+        students = students.filter(
+            skills__proficiency_level__icontains=proficiency,
+            skills__verification_status="approved",
+        ).distinct()
+
+    job_posts = JobPost.objects.filter(
+        recruiter=request.user
+    ).order_by("-created_at")
+
+    applications = JobApplication.objects.filter(
+        job__recruiter=request.user
+    ).select_related("job", "student").order_by("-applied_at")
+
+    shortlists = RecruiterShortlist.objects.filter(
+        recruiter=request.user
+    ).select_related("student_profile", "student_profile__user")
+
+    shortlisted_ids = shortlists.values_list("student_profile_id", flat=True)
+
+    context = {
+        "students": students,
+        "query": query,
+        "verified_only": verified_only,
+        "department": department,
+        "min_cgpa": min_cgpa,
+        "proficiency": proficiency,
+        "job_posts": job_posts,
+        "applications": applications,
+        "shortlists": shortlists,
+        "shortlisted_ids": shortlisted_ids,
+    }
+
+    return render(request, "accounts/recruiter_dashboard.html", context)
+
+
+# =========================
+# Student Profile
+# =========================
 
 @login_required
 @role_required("student")
@@ -191,7 +327,11 @@ def create_student_profile(request):
     student_profile = get_student_profile(request.user)
 
     if request.method == "POST":
-        form = StudentProfileForm(request.POST, request.FILES, instance=student_profile)
+        form = StudentProfileForm(
+            request.POST,
+            request.FILES,
+            instance=student_profile,
+        )
 
         if form.is_valid():
             form.save()
@@ -217,7 +357,11 @@ def update_student_profile(request):
     student_profile = get_student_profile(request.user)
 
     if request.method == "POST":
-        form = StudentProfileForm(request.POST, request.FILES, instance=student_profile)
+        form = StudentProfileForm(
+            request.POST,
+            request.FILES,
+            instance=student_profile,
+        )
 
         if form.is_valid():
             form.save()
@@ -237,6 +381,10 @@ def update_student_profile(request):
     )
 
 
+# =========================
+# Certificate / Project
+# =========================
+
 @login_required
 @role_required("student")
 def upload_certificate_project(request):
@@ -250,7 +398,10 @@ def upload_certificate_project(request):
             certificate.student_profile = student_profile
             certificate.save()
 
-            messages.success(request, "Certificate or project link uploaded successfully.")
+            messages.success(
+                request,
+                "Certificate or project link uploaded successfully.",
+            )
             return redirect("student_dashboard")
     else:
         form = CertificateProjectForm()
@@ -279,10 +430,17 @@ def delete_certificate_project(request, pk):
 
     if request.method == "POST":
         certificate.delete()
-        messages.success(request, "Certificate or project deleted successfully.")
+        messages.success(
+            request,
+            "Certificate or project deleted successfully.",
+        )
 
     return redirect("student_dashboard")
 
+
+# =========================
+# Skills
+# =========================
 
 @login_required
 @role_required("student")
@@ -374,6 +532,10 @@ def delete_skill(request, pk):
 
     return redirect("student_dashboard")
 
+
+# =========================
+# Mentorship Connection
+# =========================
 
 @login_required
 @role_required("student")
@@ -468,6 +630,10 @@ def respond_mentorship_request(request, pk, action):
     return redirect("teacher_dashboard")
 
 
+# =========================
+# Skill Verification
+# =========================
+
 @login_required
 @role_required("student")
 def request_skill_verification(request, skill_id):
@@ -485,11 +651,17 @@ def request_skill_verification(request, skill_id):
     ).distinct()
 
     if not connected_teachers.exists():
-        messages.error(request, "You must connect with a teacher before requesting skill verification.")
+        messages.error(
+            request,
+            "You must connect with a teacher before requesting skill verification.",
+        )
         return redirect("student_dashboard")
 
     if request.method == "POST":
-        form = SkillVerificationRequestForm(request.POST, student=request.user)
+        form = SkillVerificationRequestForm(
+            request.POST,
+            student=request.user,
+        )
 
         if form.is_valid():
             teacher = form.cleaned_data["teacher"]
@@ -568,7 +740,7 @@ def approve_skill_verification(request, request_id):
             approved_skill.save()
 
             verification_request.status = "approved"
-            verification_request.feedback = request.POST.get("feedback", "")
+            verification_request.feedback = form.cleaned_data.get("feedback", "")
             verification_request.responded_at = timezone.now()
             verification_request.save()
 
@@ -652,5 +824,184 @@ def reject_skill_verification(request, request_id):
             "skill": skill,
             "title": "Reject Skill Verification",
             "button_text": "Reject Skill",
+        },
+    )
+
+
+# =========================
+# Recruiter Shortlist
+# =========================
+
+@login_required
+@role_required("recruiter")
+def save_shortlisted_candidate(request, student_profile_id):
+    student_profile = get_object_or_404(
+        StudentProfile,
+        pk=student_profile_id,
+    )
+
+    RecruiterShortlist.objects.get_or_create(
+        recruiter=request.user,
+        student_profile=student_profile,
+    )
+
+    messages.success(request, "Candidate saved to shortlist.")
+    return redirect("recruiter_dashboard")
+
+
+@login_required
+@role_required("recruiter")
+def remove_shortlisted_candidate(request, shortlist_id):
+    shortlist = get_object_or_404(
+        RecruiterShortlist,
+        pk=shortlist_id,
+        recruiter=request.user,
+    )
+
+    shortlist.delete()
+    messages.success(request, "Candidate removed from shortlist.")
+    return redirect("recruiter_dashboard")
+
+
+# =========================
+# Job Post, Apply, Track Status
+# =========================
+
+@login_required
+@role_required("recruiter")
+def create_job_post(request):
+    if request.method == "POST":
+        form = JobPostForm(request.POST)
+
+        if form.is_valid():
+            job = form.save(commit=False)
+            job.recruiter = request.user
+            job.save()
+
+            messages.success(request, "Job or internship posted successfully.")
+            return redirect("recruiter_dashboard")
+    else:
+        form = JobPostForm()
+
+    return render(
+        request,
+        "accounts/job_post_form.html",
+        {
+            "form": form,
+            "title": "Post Job or Internship",
+            "button_text": "Publish Post",
+        },
+    )
+
+
+@login_required
+@role_required("student")
+def job_list(request):
+    jobs = JobPost.objects.filter(
+        is_active=True
+    ).select_related("recruiter").order_by("-created_at")
+
+    applied_job_ids = JobApplication.objects.filter(
+        student=request.user
+    ).values_list("job_id", flat=True)
+
+    context = {
+        "jobs": jobs,
+        "applied_job_ids": applied_job_ids,
+    }
+
+    return render(request, "accounts/job_list.html", context)
+
+
+@login_required
+@role_required("student")
+def apply_job(request, job_id):
+    job = get_object_or_404(
+        JobPost,
+        pk=job_id,
+        is_active=True,
+    )
+
+    already_applied = JobApplication.objects.filter(
+        job=job,
+        student=request.user,
+    ).exists()
+
+    if already_applied:
+        messages.error(request, "You have already applied for this position.")
+        return redirect("job_list")
+
+    if request.method == "POST":
+        form = JobApplicationForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.job = job
+            application.student = request.user
+            application.status = "applied"
+            application.save()
+
+            messages.success(request, "Application submitted successfully.")
+            return redirect("my_applications")
+    else:
+        form = JobApplicationForm()
+
+    return render(
+        request,
+        "accounts/apply_job.html",
+        {
+            "form": form,
+            "job": job,
+        },
+    )
+
+
+@login_required
+@role_required("student")
+def my_applications(request):
+    applications = JobApplication.objects.filter(
+        student=request.user
+    ).select_related("job").order_by("-applied_at")
+
+    return render(
+        request,
+        "accounts/my_applications.html",
+        {
+            "applications": applications,
+        },
+    )
+
+
+@login_required
+@role_required("recruiter")
+def update_application_status(request, pk):
+    application = get_object_or_404(
+        JobApplication,
+        pk=pk,
+        job__recruiter=request.user,
+    )
+
+    if request.method == "POST":
+        form = ApplicationStatusUpdateForm(
+            request.POST,
+            instance=application,
+        )
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Application status updated successfully.",
+            )
+            return redirect("recruiter_dashboard")
+    else:
+        form = ApplicationStatusUpdateForm(instance=application)
+
+    return render(
+        request,
+        "accounts/update_application_status.html",
+        {
+            "form": form,
+            "application": application,
         },
     )

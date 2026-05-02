@@ -8,10 +8,6 @@ from .models import UserProfile, SkillCategory
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    """
-    Automatically creates a UserProfile whenever a new User is created.
-    This prevents login/dashboard errors when a user has no role profile.
-    """
     if created:
         UserProfile.objects.get_or_create(
             user=instance,
@@ -19,16 +15,12 @@ def create_user_profile(sender, instance, created, **kwargs):
                 "role": "student",
                 "is_locked": False,
                 "failed_login_attempts": 0,
-            },
+            }
         )
 
 
 @receiver(post_migrate)
 def create_default_skill_categories(sender, **kwargs):
-    """
-    Creates default skill categories after migration.
-    Safe for tests and real database.
-    """
     if sender.name != "accounts":
         return
 
@@ -41,6 +33,9 @@ def create_default_skill_categories(sender, **kwargs):
             ("Design", "UI, UX, graphics, and visual design"),
             ("Communication", "Presentation, writing, and teamwork"),
             ("Research", "Academic research and documentation"),
+            ("Leadership", "Leadership, teamwork, and management skills"),
+            ("Creative", "Creative, content, and media-related skills"),
+            ("Soft Skill", "Communication, teamwork, problem-solving, and adaptability"),
         ]
 
         for name, description in default_categories:

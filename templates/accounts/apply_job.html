@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Apply for Position | SkillSphere{% endblock %}
+
+{% block extra_css %}
+<style>
+    .application-wrap {
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
+        gap: 24px;
+        align-items: start;
+        animation: fadeUp 0.8s ease;
+    }
+
+    .application-card {
+        padding: 30px;
+        border-radius: 28px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.065));
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow: 0 18px 50px rgba(0,0,0,0.20);
+    }
+
+    .application-card h1,
+    .application-card h2 {
+        color: #f8fbff;
+        margin-bottom: 14px;
+    }
+
+    .application-card h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+    }
+
+    .application-card p {
+        color: var(--muted);
+        line-height: 1.75;
+        margin: 10px 0;
+    }
+
+    .job-pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 16px 0;
+    }
+
+    .job-pill-row span {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: #dbeafe;
+        font-weight: 800;
+        font-size: 0.84rem;
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 18px;
+    }
+
+    .field-group {
+        display: grid;
+        gap: 8px;
+    }
+
+    .field-group label {
+        color: #eaf2ff;
+        font-weight: 800;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+        width: 100%;
+        background: rgba(255,255,255,0.08);
+        color: #ffffff;
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 16px;
+        padding: 15px 16px;
+        outline: none;
+        font-size: 0.96rem;
+    }
+
+    .field-group textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+        border-color: rgba(110,168,254,0.75);
+        box-shadow: 0 0 0 5px rgba(110,168,254,0.12);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+        .application-wrap {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="application-wrap">
+
+    <section class="application-card">
+        <div class="auth-badge">🚀 Application Preview</div>
+
+        <h1>{{ job.title }}</h1>
+
+        <p>
+            <strong>Company:</strong> {{ job.company_name }}<br>
+            <strong>Location:</strong> {{ job.location|default:"Not specified" }}
+        </p>
+
+        <div class="job-pill-row">
+            <span>{{ job.get_job_type_display|default:job.job_type }}</span>
+
+            {% if job.deadline %}
+                <span>Deadline: {{ job.deadline|date:"d M Y" }}</span>
+            {% endif %}
+        </div>
+
+        <p>{{ job.description }}</p>
+
+        {% if job.required_skills %}
+            <p>
+                <strong>Required Skills:</strong> {{ job.required_skills }}
+            </p>
+        {% endif %}
+    </section>
+
+    <section class="application-card">
+        <h2>Submit Your Application</h2>
+
+        <p>
+            Your SkillSphere profile will help the recruiter understand your skills, verification status, certificates, and academic background.
+        </p>
+
+        <form method="POST" enctype="multipart/form-data" class="form-grid">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit Application</button>
+                <a href="{% url 'job_list' %}" class="btn btn-secondary">Back to Jobs</a>
+            </div>
+        </form>
+    </section>
+
+</div>
+{% endblock %}

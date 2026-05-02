@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Post Job | SkillSphere{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-wrap {
+        min-height: calc(100vh - 160px);
+        display: grid;
+        place-items: center;
+        animation: fadeUp 0.8s ease;
+    }
+
+    .form-card {
+        width: 100%;
+        max-width: 760px;
+        padding: 36px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-card::after {
+        content: "";
+        position: absolute;
+        right: -60px;
+        bottom: -60px;
+        width: 240px;
+        height: 240px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(139,92,246,0.25), transparent 65%);
+        pointer-events: none;
+    }
+
+    .form-card h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        color: #f8fbff;
+        margin-bottom: 10px;
+    }
+
+    .form-card p {
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 24px;
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 18px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .field-group {
+        display: grid;
+        gap: 8px;
+    }
+
+    .field-group label {
+        color: #eaf2ff;
+        font-weight: 800;
+        font-size: 0.95rem;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+        width: 100%;
+        background: rgba(255,255,255,0.08);
+        color: #ffffff;
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 16px;
+        padding: 15px 16px;
+        outline: none;
+        font-size: 0.96rem;
+        transition: 0.25s ease;
+    }
+
+    .field-group textarea {
+        min-height: 130px;
+        resize: vertical;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+        border-color: rgba(110,168,254,0.75);
+        box-shadow: 0 0 0 5px rgba(110,168,254,0.12);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-wrap">
+    <div class="glass-card form-card">
+        <div class="auth-badge">💼 Recruiter Workspace</div>
+
+        <h1>{{ title|default:"Post Job or Internship" }}</h1>
+        <p>
+            Create an opportunity for students. Add title, description, deadline, required skills, and publish it to the student dashboard.
+        </p>
+
+        <form method="POST" class="form-grid">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    {{ button_text|default:"Publish Job" }}
+                </button>
+
+                <a href="{% url 'recruiter_dashboard' %}" class="btn btn-secondary">
+                    Back to Dashboard
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

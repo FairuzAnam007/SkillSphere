@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Update Application Status | SkillSphere{% endblock %}
+
+{% block extra_css %}
+<style>
+    .status-wrap {
+        min-height: calc(100vh - 160px);
+        display: grid;
+        place-items: center;
+        animation: fadeUp 0.8s ease;
+    }
+
+    .status-card {
+        width: 100%;
+        max-width: 760px;
+        padding: 36px;
+        border-radius: 30px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.065)),
+            radial-gradient(circle at top right, rgba(34,211,238,0.14), transparent 35%);
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow: 0 20px 55px rgba(0,0,0,0.22);
+    }
+
+    .status-card h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        color: #f8fbff;
+        margin-bottom: 12px;
+    }
+
+    .application-summary {
+        padding: 20px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        margin: 22px 0;
+    }
+
+    .application-summary p {
+        color: var(--muted);
+        line-height: 1.75;
+        margin: 8px 0;
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 18px;
+    }
+
+    .field-group {
+        display: grid;
+        gap: 8px;
+    }
+
+    .field-group label {
+        color: #eaf2ff;
+        font-weight: 800;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+        width: 100%;
+        background: rgba(255,255,255,0.08);
+        color: #ffffff;
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 16px;
+        padding: 15px 16px;
+        outline: none;
+        font-size: 0.96rem;
+    }
+
+    .field-group textarea {
+        min-height: 130px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="status-wrap">
+    <section class="status-card">
+        <div class="auth-badge">📌 Recruiter Action</div>
+
+        <h1>Update Application Status</h1>
+
+        <div class="application-summary">
+            <p><strong>Student:</strong>
+                {% if application.student.first_name or application.student.last_name %}
+                    {{ application.student.first_name }} {{ application.student.last_name }}
+                {% else %}
+                    {{ application.student.username }}
+                {% endif %}
+            </p>
+
+            <p><strong>Job:</strong> {{ application.job.title }}</p>
+            <p><strong>Company:</strong> {{ application.job.company_name }}</p>
+            <p><strong>Current Status:</strong> {{ application.get_status_display }}</p>
+        </div>
+
+        <form method="POST" class="form-grid">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {% for field in form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Status</button>
+                <a href="{% url 'recruiter_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </form>
+    </section>
+</div>
+{% endblock %}
