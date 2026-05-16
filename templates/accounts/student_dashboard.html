@@ -5,133 +5,143 @@
 {% block extra_css %}
 <style>
 
-    .delete-link-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 40px;
-    padding: 0 14px;
-    border-radius: 999px;
-    text-decoration: none;
-    color: #ffffff;
-    background: linear-gradient(135deg, #fb7185, #ef4444);
-    border: 1px solid rgba(255,255,255,0.12);
-    font-weight: 800;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: 0.25s ease;
-    font-family: inherit;
-}
 
-.delete-link-btn:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.06);
-}
-
-.inline-form {
-    display: inline-flex;
-    margin: 0;
-}
     .dash-wrap {
+        max-width: 1220px;
+        margin: 0 auto;
         display: grid;
-        gap: 22px;
+        gap: 24px;
         animation: fadeUp 0.8s ease;
     }
 
+    .dash-card,
     .hero-card {
-        padding: 32px;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.065));
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow: 0 18px 50px rgba(0,0,0,0.20);
+        backdrop-filter: blur(16px);
+    }
+
+    .hero-card {
+        padding: 34px;
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 26px;
+        gap: 24px;
+    }
+
+    .dash-card {
+        padding: 28px;
     }
 
     .eyebrow {
         color: #93c5fd;
-        font-size: 0.9rem;
-        font-weight: 800;
-        letter-spacing: 0.04em;
+        font-size: 0.85rem;
+        font-weight: 900;
         text-transform: uppercase;
-        margin-bottom: 8px;
+        letter-spacing: 0.06em;
+        margin: 0 0 8px;
     }
 
-    .hero-card h1 {
-        font-size: clamp(2.2rem, 4vw, 3.6rem);
-        line-height: 1.05;
-        margin-bottom: 14px;
+    h1 {
+        font-size: clamp(2.2rem, 4vw, 3.4rem);
         color: #f8fbff;
+        margin: 0 0 12px;
         font-weight: 900;
     }
 
-    .dash-text {
-        color: var(--muted);
-        max-width: 900px;
-        line-height: 1.7;
-        font-size: 1.05rem;
+    .card-title {
+        color: #f8fbff;
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: 900;
     }
 
-    .action-row {
+    .muted,
+    .card-subtitle,
+    .item-card p {
+        color: var(--muted);
+        line-height: 1.7;
+    }
+
+    .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .action-row,
+    .item-actions,
+    .link-row {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 10px;
         align-items: center;
     }
 
-    .dashboard-btn,
-    .dashboard-btn-small {
+    .btn-main,
+    .btn-small,
+    .delete-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        text-align: center;
         text-decoration: none;
         border: 1px solid transparent;
         cursor: pointer;
-        font-weight: 800;
-        line-height: 1;
+        font-weight: 900;
         color: #ffffff;
         transition: 0.22s ease;
-        white-space: nowrap;
         font-family: inherit;
+        white-space: nowrap;
     }
 
-    .dashboard-btn {
-        min-height: 52px;
-        padding: 0 22px;
-        border-radius: 16px;
-        font-size: 0.98rem;
+    .btn-main {
+        min-height: 50px;
+        padding: 0 20px;
+        border-radius: 15px;
+        font-size: 0.95rem;
     }
 
-    .dashboard-btn-small {
+    .btn-small,
+    .delete-btn {
         min-height: 40px;
-        padding: 0 15px;
+        padding: 0 14px;
         border-radius: 12px;
         font-size: 0.82rem;
     }
 
     .btn-primary {
         background: linear-gradient(135deg, #6ea8fe, #7c3aed);
-        box-shadow: 0 14px 28px rgba(110, 168, 254, 0.2);
+        box-shadow: 0 14px 28px rgba(110,168,254,0.18);
     }
 
     .btn-secondary {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.16);
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.16);
     }
 
-    .btn-danger {
+    .btn-danger,
+    .delete-btn {
         background: linear-gradient(135deg, #fb7185, #ef4444);
-        box-shadow: 0 14px 28px rgba(239, 68, 68, 0.18);
     }
 
     .btn-success {
         background: linear-gradient(135deg, #22c55e, #14b8a6);
-        box-shadow: 0 14px 28px rgba(34, 197, 94, 0.18);
     }
 
-    .dashboard-btn:hover,
-    .dashboard-btn-small:hover {
+    .btn-main:hover,
+    .btn-small:hover,
+    .delete-btn:hover {
         transform: translateY(-2px);
-        filter: brightness(1.07);
+        filter: brightness(1.06);
         color: #ffffff;
+    }
+
+    .inline-form {
+        display: inline-flex;
+        margin: 0;
     }
 
     .message-box {
@@ -140,456 +150,261 @@
         background: rgba(34,197,94,0.12);
         border: 1px solid rgba(34,197,94,0.22);
         color: #dcfce7;
-        font-weight: 700;
+        font-weight: 800;
     }
 
     .message-box p {
         margin: 0;
     }
 
-    .dash-card {
-        padding: 26px;
-        border-radius: 28px;
-        background:
-            linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.065));
-        border: 1px solid rgba(255,255,255,0.14);
-        box-shadow: 0 18px 50px rgba(0,0,0,0.20);
-        backdrop-filter: blur(16px);
-    }
-
-    .card-title {
-        font-size: 1.55rem;
-        color: #f8fbff;
-        margin: 0 0 16px;
-        font-weight: 900;
-    }
-
-    .card-subtitle {
-        color: var(--muted);
-        line-height: 1.7;
-        margin: -8px 0 0;
-        max-width: 720px;
-    }
-
-    .section-head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 22px;
-        flex-wrap: wrap;
-    }
-
-    .section-head .dashboard-btn {
-        margin-top: 2px;
-    }
-
     .profile-area {
         display: grid;
-        grid-template-columns: 220px 1fr;
+        grid-template-columns: 210px 1fr;
         gap: 24px;
         align-items: start;
     }
 
-    .profile-photo {
-        width: 220px;
-        height: 220px;
-        border-radius: 28px;
-        object-fit: cover;
-        border: 2px solid rgba(255,255,255,0.18);
-        box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+    .profile-photo,
+    .profile-placeholder {
+        width: 210px;
+        height: 210px;
+        border-radius: 26px;
+        border: 1px solid rgba(255,255,255,0.18);
         background: rgba(255,255,255,0.08);
+        box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+    }
+
+    .profile-photo {
+        object-fit: cover;
     }
 
     .profile-placeholder {
-        width: 220px;
-        height: 220px;
-        border-radius: 28px;
         display: grid;
         place-items: center;
-        background:
-            radial-gradient(circle at top left, rgba(110,168,254,0.25), transparent 35%),
-            rgba(255,255,255,0.08);
-        border: 2px solid rgba(255,255,255,0.16);
         color: #dbeafe;
         font-size: 4rem;
         font-weight: 900;
     }
 
-    .profile-info {
+    .info-grid,
+    .item-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(180px, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
     }
 
-    .info-box {
-        padding: 15px;
-        border-radius: 18px;
+    .info-box,
+    .item-card,
+    .proof-box {
+        border-radius: 20px;
         background: rgba(255,255,255,0.07);
-        border: 1px solid rgba(255,255,255,0.10);
+        border: 1px solid rgba(255,255,255,0.11);
+        padding: 18px;
+        min-width: 0;
     }
 
     .info-box span {
         display: block;
         color: #9fb0ca;
-        font-size: 0.82rem;
-        font-weight: 800;
+        font-size: 0.8rem;
+        font-weight: 900;
         margin-bottom: 5px;
     }
 
     .info-box strong {
-        color: #f3f7ff;
-        font-size: 0.98rem;
+        color: #f8fbff;
         word-break: break-word;
     }
 
-    .skills-grid,
-    .certificate-grid,
-    .request-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-        gap: 18px;
-    }
-
-    .skill-item,
-    .certificate-item,
-    .request-item {
-        padding: 22px;
-        border-radius: 24px;
+    .item-card {
         background:
             linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.055)),
             radial-gradient(circle at top right, rgba(110,168,254,0.12), transparent 35%);
-        border: 1px solid rgba(255,255,255,0.12);
         box-shadow: 0 18px 40px rgba(0,0,0,0.16);
-        transition: 0.25s ease;
     }
 
-    .skill-item:hover,
-    .certificate-item:hover,
-    .request-item:hover {
-        transform: translateY(-4px);
-        background:
-            linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.07)),
-            radial-gradient(circle at top right, rgba(110,168,254,0.18), transparent 36%);
+    .item-card h4 {
+        color: #f8fbff;
+        font-size: 1.18rem;
+        margin: 0 0 10px;
+        font-weight: 900;
     }
 
-    .skill-top {
+    .item-top {
         display: flex;
-        align-items: flex-start;
         justify-content: space-between;
-        gap: 14px;
+        align-items: flex-start;
+        gap: 12px;
         margin-bottom: 12px;
     }
 
-    .skill-top h4,
-    .certificate-item h4,
-    .request-item h4 {
-        font-size: 1.25rem;
-        color: #f3f7ff;
-        margin: 0 0 9px;
-        display: flex;
+    .pill {
+        display: inline-flex;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .skill-meta {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 8px;
-    }
-
-    .skill-meta span {
+        justify-content: center;
         padding: 7px 11px;
         border-radius: 999px;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.10);
+        font-size: 0.76rem;
+        font-weight: 900;
         color: #dbeafe;
-        font-size: 0.82rem;
-        font-weight: 700;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        white-space: nowrap;
     }
 
-    .skill-desc,
-    .certificate-item p,
-    .request-item p {
-        color: var(--muted);
-        line-height: 1.75;
-        margin: 10px 0;
+    .pill.approved,
+    .pill.accepted,
+    .pill.completed,
+    .pill.shortlisted {
+        color: #bbf7d0;
+        background: rgba(34,197,94,0.16);
+        border-color: rgba(34,197,94,0.25);
     }
 
-    .enrollment-card {
-        display: grid;
-        gap: 14px;
+    .pill.pending,
+    .pill.in_progress,
+    .pill.reviewing {
+        color: #fde68a;
+        background: rgba(245,158,11,0.16);
+        border-color: rgba(245,158,11,0.25);
     }
 
-    .enrollment-progress {
+    .pill.rejected {
+        color: #fecaca;
+        background: rgba(239,68,68,0.16);
+        border-color: rgba(239,68,68,0.25);
+    }
+
+    .progress-bar {
         width: 100%;
         height: 10px;
         border-radius: 999px;
-        background: rgba(255,255,255,0.12);
         overflow: hidden;
+        background: rgba(255,255,255,0.12);
         border: 1px solid rgba(255,255,255,0.10);
+        margin: 12px 0;
     }
 
-    .enrollment-progress-fill {
+    .progress-fill {
         height: 100%;
         border-radius: 999px;
         background: linear-gradient(90deg, #6ea8fe, #22c55e);
     }
 
-    .enrollment-actions {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(120px, 1fr));
-        gap: 10px;
-        margin-top: 8px;
+    .proof-box h5 {
+        color: #f8fbff;
+        margin: 0 0 10px;
+        font-size: 1rem;
     }
 
-    .enrollment-actions form,
-    .enrollment-actions button {
-        width: 100%;
+    a {
+        color: #93c5fd;
     }
 
-    .status-pill {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 12px;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 900;
-        white-space: nowrap;
-        border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .status-pill.approved,
-    .status-pill.accepted,
-    .status-pill.completed {
-        background: rgba(34, 197, 94, 0.16);
-        color: #bbf7d0;
-        border-color: rgba(34, 197, 94, 0.25);
-    }
-
-    .status-pill.pending,
-    .status-pill.in_progress {
-        background: rgba(245, 158, 11, 0.16);
-        color: #fde68a;
-        border-color: rgba(245, 158, 11, 0.25);
-    }
-
-    .status-pill.rejected {
-        background: rgba(239, 68, 68, 0.16);
-        color: #fecaca;
-        border-color: rgba(239, 68, 68, 0.25);
-    }
-
-    .status-pill.enrolled,
-    .status-pill.neutral,
-    .status-pill.applied {
-        background: rgba(255,255,255,0.08);
-        color: #dbeafe;
-    }
-
-    .verified-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 900;
-        color: #dcfce7;
-        background: rgba(34, 197, 94, 0.16);
-        border: 1px solid rgba(34, 197, 94, 0.28);
-        box-shadow: 0 0 24px rgba(34, 197, 94, 0.14);
-    }
-
-    .verified-box {
-        display: flex;
-        gap: 14px;
-        align-items: flex-start;
-        padding: 15px;
-        border-radius: 18px;
-        margin: 16px 0;
-        background:
-            linear-gradient(135deg, rgba(34,197,94,0.14), rgba(34,211,238,0.08));
-        border: 1px solid rgba(34,197,94,0.20);
-    }
-
-    .verified-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 999px;
-        display: grid;
-        place-items: center;
-        background: rgba(34,197,94,0.22);
-        color: #dcfce7;
-        font-weight: 900;
-        flex: 0 0 auto;
-    }
-
-    .verified-box strong {
-        color: #f3f7ff;
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    .verified-box p {
-        color: #c4d1e6;
-        line-height: 1.6;
-        margin: 0;
-    }
-
-    .rejection-box {
-        padding: 14px 16px;
-        border-radius: 18px;
-        background: rgba(239, 68, 68, 0.12);
-        border: 1px solid rgba(239, 68, 68, 0.22);
-        margin: 16px 0;
-    }
-
-    .rejection-box strong {
-        color: #fecaca;
-    }
-
-    .rejection-box p {
-        color: #ffd7d7;
-        margin-top: 6px;
-        line-height: 1.6;
-    }
-
-    .upload-links,
-    .skill-actions,
-    .item-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 16px;
-    }
-
-    .upload-links a {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 40px;
-        padding: 0 14px;
-        border-radius: 999px;
-        text-decoration: none;
-        color: #eaf2ff;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.12);
-        font-weight: 800;
-        font-size: 0.9rem;
-        transition: 0.25s ease;
-    }
-
-    .upload-links a:hover {
-        transform: translateY(-2px);
-        background: rgba(255,255,255,0.12);
-    }
-
-    .inline-form {
-        display: inline-flex;
-        margin: 0;
-    }
-
-    .empty-state {
+    .empty-box {
         padding: 20px;
         border-radius: 20px;
         background: rgba(255,255,255,0.07);
         border: 1px solid rgba(255,255,255,0.10);
         color: var(--muted);
-        line-height: 1.7;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 850px) {
         .profile-area {
-            grid-template-columns: 1fr;
-        }
-
-        .profile-photo,
-        .profile-placeholder {
-            width: 180px;
-            height: 180px;
-        }
-
-        .enrollment-actions {
             grid-template-columns: 1fr;
         }
     }
 
     @media (max-width: 640px) {
-        .hero-card {
-            padding: 24px;
+        .hero-card,
+        .dash-card {
+            padding: 22px;
         }
 
-        .action-row {
+        .action-row,
+        .item-actions,
+        .link-row {
             flex-direction: column;
             align-items: stretch;
         }
 
-        .dashboard-btn,
-        .dashboard-btn-small {
+        .btn-main,
+        .btn-small,
+        .delete-btn {
             width: 100%;
         }
 
-        .profile-info {
-            grid-template-columns: 1fr;
-        }
-
-        .skill-top {
+        .item-top {
             flex-direction: column;
-        }
-
-        .skills-grid,
-        .certificate-grid,
-        .request-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .skill-actions,
-        .item-actions,
-        .upload-links {
-            flex-direction: column;
-        }
-
-        .skill-actions form,
-        .skill-actions button,
-        .item-actions a,
-        .upload-links a {
-            width: 100%;
         }
     }
+
+    .view-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 900;
+    color: #ffffff;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.16);
+    transition: 0.22s ease;
+    white-space: nowrap;
+}
+
+.view-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    color: #ffffff;
+}
+
+.link-row {
+    margin-top: 16px;
+}
+
+.link-row a {
+    color: #ffffff;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="dash-wrap">
 
-    <section class="glass-card hero-card">
+    <section class="hero-card">
         <div>
             <p class="eyebrow">Welcome</p>
             <h1>Student Dashboard</h1>
-
-            <p class="dash-text">
+            <p class="muted">
+                Hello,
                 {% if user.first_name or user.last_name %}
-                    Hello, {{ user.first_name }} {{ user.last_name }}. This is your personal space to manage your academic identity, highlight your work, and keep your profile polished and professional.
+                    {{ user.first_name }} {{ user.last_name }}.
                 {% else %}
-                    Hello, {{ user.username }}. This is your personal space to manage your academic identity, highlight your work, and keep your profile polished and professional.
+                    {{ user.username }}.
                 {% endif %}
+                Manage your profile, skills, learning progress, messages, notifications, and job applications.
             </p>
         </div>
 
         <div class="action-row">
-            <a href="{% url 'home' %}" class="dashboard-btn btn-secondary">Home</a>
+            <a href="{% url 'home' %}" class="btn-main btn-secondary">Home</a>
+            <a href="{% url 'update_student_profile' %}" class="btn-main btn-primary">Update Profile</a>
+            <a href="{% url 'message_inbox' %}" class="btn-main btn-secondary">Messages</a>
 
-            <a href="{% url 'update_student_profile' %}" class="dashboard-btn btn-primary">
-                Update Profile
+            <a href="{% url 'notification_list' %}" class="btn-main btn-secondary">
+                Notifications
+                {% if unread_notifications_count %}
+                    ({{ unread_notifications_count }})
+                {% endif %}
             </a>
 
             <form method="post" action="{% url 'logout' %}" class="inline-form">
                 {% csrf_token %}
-                <button type="submit" class="dashboard-btn btn-danger">Logout</button>
+                <button type="submit" class="btn-main btn-danger">Logout</button>
             </form>
         </div>
     </section>
@@ -603,94 +418,33 @@
     {% endif %}
 
     <section class="dash-card">
-        <h2 class="card-title">Profile Information</h2>
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">Profile Information</h2>
+                <p class="card-subtitle">Your academic and personal information used across SkillSphere.</p>
+            </div>
+        </div>
 
         <div class="profile-area">
             <div>
                 {% if student_profile.profile_picture %}
-                    <img src="{{ student_profile.profile_picture.url }}" alt="Student Profile Picture" class="profile-photo">
+                    <img src="{{ student_profile.profile_picture.url }}" alt="Profile Picture" class="profile-photo">
                 {% else %}
-                    <div class="profile-placeholder">
-                        {% if user.first_name %}
-                            {{ user.first_name|first|upper }}
-                        {% else %}
-                            {{ user.username|first|upper }}
-                        {% endif %}
-                    </div>
+                    <div class="profile-placeholder">{{ user.username|first|upper }}</div>
                 {% endif %}
             </div>
 
-            <div class="profile-info">
-                <div class="info-box">
-                    <span>Name</span>
-                    <strong>
-                        {% if user.first_name or user.last_name %}
-                            {{ user.first_name }} {{ user.last_name }}
-                        {% else %}
-                            {{ user.username }}
-                        {% endif %}
-                    </strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Email</span>
-                    <strong>{{ user.email|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Phone</span>
-                    <strong>{{ student_profile.phone_number|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Address</span>
-                    <strong>{{ student_profile.address|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Date of Birth</span>
-                    <strong>{{ student_profile.date_of_birth|date:"d M Y"|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>University</span>
-                    <strong>{{ student_profile.university|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Department</span>
-                    <strong>{{ student_profile.department|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Semester</span>
-                    <strong>{{ student_profile.semester|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Session</span>
-                    <strong>{{ student_profile.session|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>CGPA</span>
-                    <strong>{{ student_profile.cgpa|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Bio</span>
-                    <strong>{{ student_profile.bio|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Extracurricular Activities</span>
-                    <strong>{{ student_profile.extracurricular_activities|default:"Not added" }}</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Skills Summary</span>
-                    <strong>{{ student_profile.skills_summary|default:"Not added" }}</strong>
-                </div>
+            <div class="info-grid">
+                <div class="info-box"><span>Name</span><strong>{{ user.get_full_name|default:user.username }}</strong></div>
+                <div class="info-box"><span>Email</span><strong>{{ user.email|default:"Not added" }}</strong></div>
+                <div class="info-box"><span>Phone</span><strong>{{ student_profile.phone_number|default:"Not added" }}</strong></div>
+                <div class="info-box"><span>University</span><strong>{{ student_profile.university|default:"Not added" }}</strong></div>
+                <div class="info-box"><span>Department</span><strong>{{ student_profile.department|default:"Not added" }}</strong></div>
+                <div class="info-box"><span>Semester</span><strong>{{ student_profile.semester|default:"Not added" }}</strong></div>
+                <div class="info-box"><span>Session</span><strong>{{ student_profile.session|default:"Not added" }}</strong></div>
+                <div class="info-box"><span>CGPA</span><strong>{{ student_profile.cgpa|default:"Not added" }}</strong></div>
+                <div class="info-box"><span>Address</span><strong>{{ student_profile.address|default:"Not added" }}</strong></div>
+                <div class="info-box"><span>Bio</span><strong>{{ student_profile.bio|default:"Not added" }}</strong></div>
             </div>
         </div>
     </section>
@@ -699,43 +453,33 @@
         <div class="section-head">
             <div>
                 <h2 class="card-title">Teacher Mentoring Connection</h2>
-                <p class="card-subtitle">
-                    Connect with a teacher first. After approval, you can request skill verification from that teacher.
-                </p>
+                <p class="card-subtitle">Connect with a teacher and message after the request is accepted.</p>
             </div>
-
-            <a href="{% url 'request_teacher_connection' %}" class="dashboard-btn btn-primary">
-                Request Teacher
-            </a>
+            <a href="{% url 'request_teacher_connection' %}" class="btn-main btn-primary">Request Teacher</a>
         </div>
 
         {% if mentorship_requests %}
-            <div class="request-grid">
+            <div class="item-grid">
                 {% for req in mentorship_requests %}
-                    <div class="request-item">
-                        <h4>
-                            {% if req.teacher.first_name or req.teacher.last_name %}
-                                {{ req.teacher.first_name }} {{ req.teacher.last_name }}
-                            {% else %}
-                                {{ req.teacher.username }}
-                            {% endif %}
-                        </h4>
+                    <div class="item-card">
+                        <div class="item-top">
+                            <div>
+                                <h4>{{ req.teacher.get_full_name|default:req.teacher.username }}</h4>
+                                <p>{{ req.message|default:"No message added." }}</p>
+                            </div>
+                            <span class="pill {{ req.status }}">{{ req.get_status_display }}</span>
+                        </div>
 
-                        <p>
-                            <strong>Status:</strong>
-                            <span class="status-pill {{ req.status }}">
-                                {{ req.get_status_display }}
-                            </span>
-                        </p>
-
-                        <p>{{ req.message|default:"No message added." }}</p>
+                        {% if req.status == "accepted" %}
+                            <div class="item-actions">
+                                <a href="{% url 'send_message_to_user' req.teacher.id %}" class="btn-small btn-primary">Message Teacher</a>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">
-                No teacher connection request sent yet.
-            </div>
+            <div class="empty-box">No teacher connection request sent yet.</div>
         {% endif %}
     </section>
 
@@ -743,83 +487,73 @@
         <div class="section-head">
             <div>
                 <h2 class="card-title">Skill Enrollment</h2>
-                <p class="card-subtitle">
-                    Write the skill you want to learn and choose a teacher or mentor for guidance.
-                </p>
+                <p class="card-subtitle">Write the skill you want to learn, submit proof, and let your teacher update the progress.</p>
             </div>
-
-            <a href="{% url 'enroll_skill' %}" class="dashboard-btn btn-primary">
-                Enroll Skill
-            </a>
+            <a href="{% url 'enroll_skill' %}" class="btn-main btn-primary">Enroll Skill</a>
         </div>
 
         {% if skill_enrollments %}
-            <div class="skills-grid">
+            <div class="item-grid">
                 {% for enrollment in skill_enrollments %}
-                    <div class="skill-item enrollment-card">
-                        <div class="skill-top">
+                    <div class="item-card">
+                        <div class="item-top">
                             <div>
                                 <h4>{{ enrollment.skill_title }}</h4>
-                                <div class="skill-meta">
-                                    <span>Progress {{ enrollment.progress }}%</span>
-                                </div>
+                                <span class="pill">Progress {{ enrollment.progress }}%</span>
                             </div>
-
-                            <span class="status-pill {{ enrollment.status }}">
-                                {{ enrollment.get_status_display }}
-                            </span>
+                            <span class="pill {{ enrollment.status }}">{{ enrollment.get_status_display }}</span>
                         </div>
 
-                        <div class="enrollment-progress">
-                            <div class="enrollment-progress-fill" style="width: {{ enrollment.progress }}%;"></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ enrollment.progress }}%;"></div>
                         </div>
 
-                        <p class="skill-desc">
-                            {{ enrollment.description|default:"No learning goal added." }}
-                        </p>
-
-                        <p class="skill-desc">
+                        <p><strong>Learning Goal:</strong> {{ enrollment.description|default:"No learning goal added." }}</p>
+                        <p>
                             <strong>Mentor:</strong>
                             {% if enrollment.mentor %}
-                                {% if enrollment.mentor.first_name or enrollment.mentor.last_name %}
-                                    {{ enrollment.mentor.first_name }} {{ enrollment.mentor.last_name }}
-                                {% else %}
-                                    {{ enrollment.mentor.username }}
-                                {% endif %}
+                                {{ enrollment.mentor.get_full_name|default:enrollment.mentor.username }}
                             {% else %}
                                 Not selected
                             {% endif %}
                         </p>
 
-                        <div class="enrollment-actions">
-                            <form method="post" action="{% url 'update_skill_enrollment_status' enrollment.id 'enrolled' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="dashboard-btn-small btn-secondary">
-                                    Enrolled 25%
-                                </button>
-                            </form>
+                        <div class="link-row">
+    {% if skill.proof_file %}
+        <a href="{{ skill.proof_file.url }}" target="_blank" class="view-btn">
+            View Proof File
+        </a>
+    {% endif %}
 
-                            <form method="post" action="{% url 'update_skill_enrollment_status' enrollment.id 'in_progress' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="dashboard-btn-small btn-secondary">
-                                    In Progress 50%
-                                </button>
-                            </form>
+    {% if skill.proof_link %}
+        <a href="{{ skill.proof_link }}" target="_blank" class="view-btn">
+            Open Proof Link
+        </a>
+    {% endif %}
+</div>
 
-                            <form method="post" action="{% url 'update_skill_enrollment_status' enrollment.id 'completed' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="dashboard-btn-small btn-success">
-                                    Complete 100%
-                                </button>
-                            </form>
+                        <div class="item-actions">
+                            <a href="{% url 'submit_skill_enrollment_proof' enrollment.id %}" class="btn-small btn-primary">
+                                {% if enrollment.proof_file or enrollment.proof_link or enrollment.proof_note %}
+                                    Update Proof
+                                {% else %}
+                                    Submit Proof
+                                {% endif %}
+                            </a>
                         </div>
+
+                        {% if enrollment.teacher_feedback %}
+                            <p><strong>Teacher Feedback:</strong> {{ enrollment.teacher_feedback }}</p>
+                        {% endif %}
+
+                        {% if enrollment.verified_at %}
+                            <p><strong>Verified At:</strong> {{ enrollment.verified_at|date:"d M Y, h:i A" }}</p>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">
-                No skill enrollment found yet. Click Enroll Skill to start learning.
-            </div>
+            <div class="empty-box">No skill enrollment found yet.</div>
         {% endif %}
     </section>
 
@@ -827,331 +561,178 @@
         <div class="section-head">
             <div>
                 <h2 class="card-title">Skills</h2>
-                <p class="card-subtitle">
-                    Manage your skills, upload proof, request verification, and display verified badges after teacher approval.
-                </p>
+                <p class="card-subtitle">Manage your skills, proof, and verification requests.</p>
             </div>
-
-            <a href="{% url 'add_skill' %}" class="dashboard-btn btn-primary">
-                Add Skill
-            </a>
+            <a href="{% url 'add_skill' %}" class="btn-main btn-primary">Add Skill</a>
         </div>
 
         {% if skills %}
-            <div class="skills-grid">
+            <div class="item-grid">
                 {% for skill in skills %}
-                    <div class="skill-item">
-                        <div class="skill-top">
+                    <div class="item-card">
+                        <div class="item-top">
                             <div>
-                                <h4>
-                                    {{ skill.name }}
-
-                                    {% if skill.verification_status == "approved" %}
-                                        <span class="verified-badge">✓ Verified</span>
-                                    {% endif %}
-                                </h4>
-
-                                <div class="skill-meta">
-                                    {% if skill.category %}
-                                        <span>{{ skill.category.name }}</span>
-                                    {% else %}
-                                        <span>No Category</span>
-                                    {% endif %}
-
-                                    {% if skill.proficiency_level %}
-                                        <span>{{ skill.get_proficiency_level_display }}</span>
-                                    {% endif %}
-                                </div>
+                                <h4>{{ skill.name }}</h4>
+                                <p>{{ skill.description|default:"No description added." }}</p>
                             </div>
-
-                            {% if skill.verification_status == "approved" %}
-                                <span class="status-pill approved">Approved</span>
-                            {% elif skill.verification_status == "pending" %}
-                                <span class="status-pill pending">Pending</span>
-                            {% elif skill.verification_status == "rejected" %}
-                                <span class="status-pill rejected">Rejected</span>
-                            {% else %}
-                                <span class="status-pill neutral">Not Requested</span>
-                            {% endif %}
+                            <span class="pill {{ skill.verification_status }}">{{ skill.get_verification_status_display }}</span>
                         </div>
 
-                        <p class="skill-desc">
-                            {{ skill.description|default:"No description added." }}
-                        </p>
+                        <p><strong>Category:</strong> {% if skill.category %}{{ skill.category.name }}{% else %}No category{% endif %}</p>
+                        <p><strong>Level:</strong> {{ skill.proficiency_level|default:"Not assigned" }}</p>
 
-                        {% if skill.verification_status == "approved" %}
-                            <div class="verified-box">
-                                <div class="verified-icon">✓</div>
-                                <div>
-                                    <strong>Verified Skill Badge</strong>
-                                    <p>
-                                        This skill was verified by
-                                        {% if skill.verified_by.first_name or skill.verified_by.last_name %}
-                                            {{ skill.verified_by.first_name }} {{ skill.verified_by.last_name }}
-                                        {% else %}
-                                            {{ skill.verified_by.username }}
-                                        {% endif %}
-                                        {% if skill.verified_at %}
-                                            on {{ skill.verified_at|date:"d M Y" }}
-                                        {% endif %}.
-                                    </p>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {% if skill.verification_status == "rejected" and skill.rejection_reason %}
-                            <div class="rejection-box">
-                                <strong>Rejection Reason:</strong>
-                                <p>{{ skill.rejection_reason }}</p>
-                            </div>
-                        {% endif %}
-
-                        <div class="upload-links">
+                        <div class="link-row">
                             {% if skill.proof_file %}
-                                <a href="{{ skill.proof_file.url }}" target="_blank">
-                                    View Proof File
-                                </a>
+                                <a href="{{ skill.proof_file.url }}" target="_blank">View Proof File</a>
                             {% endif %}
-
                             {% if skill.proof_link %}
-                                <a href="{{ skill.proof_link }}" target="_blank">
-                                    Open Proof Link
-                                </a>
+                                <a href="{{ skill.proof_link }}" target="_blank">Open Proof Link</a>
                             {% endif %}
                         </div>
 
-                        <div class="skill-actions">
+                        <div class="item-actions">
                             {% if skill.verification_status != "approved" %}
-                                <a href="{% url 'edit_skill' skill.pk %}" class="dashboard-btn-small btn-secondary">
-                                    Edit
-                                </a>
+                                <a href="{% url 'edit_skill' skill.pk %}" class="btn-small btn-secondary">Edit</a>
 
                                 <form method="post" action="{% url 'delete_skill' skill.pk %}" class="inline-form">
                                     {% csrf_token %}
-                                    <button type="submit" class="dashboard-btn-small btn-danger">
-                                        Delete
-                                    </button>
+                                    <button type="submit" class="delete-btn">Delete</button>
                                 </form>
                             {% endif %}
 
                             {% if skill.verification_status == "not_requested" or skill.verification_status == "rejected" %}
-                                <a href="{% url 'request_skill_verification' skill.pk %}" class="dashboard-btn-small btn-primary">
-                                    Request Verification
-                                </a>
-                            {% elif skill.verification_status == "pending" %}
-                                <button class="dashboard-btn-small btn-secondary" disabled>
-                                    Verification Pending
-                                </button>
+                                <a href="{% url 'request_skill_verification' skill.pk %}" class="btn-small btn-primary">Request Verification</a>
                             {% endif %}
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="empty-state">
-                No skills added yet. Add your skills and upload proof to start the verification process.
-            </div>
-        {% endif %}
-    </section>
 
-    <section class="dash-card">
-        <h2 class="card-title">Skill Verification Requests</h2>
-
-        {% if verification_requests %}
-            <div class="request-grid">
-                {% for req in verification_requests %}
-                    <div class="request-item">
-                        <h4>{{ req.skill.name }}</h4>
-
-                        <p>
-                            <strong>Teacher:</strong>
-                            {% if req.teacher.first_name or req.teacher.last_name %}
-                                {{ req.teacher.first_name }} {{ req.teacher.last_name }}
-                            {% else %}
-                                {{ req.teacher.username }}
-                            {% endif %}
-                        </p>
-
-                        <p>
-                            <strong>Status:</strong>
-                            <span class="status-pill {{ req.status }}">
-                                {{ req.get_status_display }}
-                            </span>
-                        </p>
-
-                        {% if req.feedback %}
-                            <p><strong>Feedback:</strong> {{ req.feedback }}</p>
+                        {% if skill.rejection_reason %}
+                            <p><strong>Rejection Reason:</strong> {{ skill.rejection_reason }}</p>
                         {% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">
-                No skill verification request sent yet.
-            </div>
+            <div class="empty-box">No skills added yet.</div>
         {% endif %}
     </section>
 
     <section class="dash-card">
-    <div class="section-head">
-        <div>
-            <h2 class="card-title">Certificates and Project Links</h2>
-            <p class="card-subtitle">
-                Upload certificates, portfolio links, GitHub links, or project proof.
-            </p>
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">Certificates and Project Links</h2>
+                <p class="card-subtitle">Upload and manage certificates, project links, GitHub links, and portfolios.</p>
+            </div>
+            <a href="{% url 'upload_certificate_project' %}" class="btn-main btn-primary">Upload Certificate</a>
         </div>
 
-        <a href="{% url 'upload_certificate_project' %}" class="dashboard-btn btn-primary">
-            Upload Certificate
+        {% if certificates %}
+            <div class="link-row">
+    {% if certificate.certificate_file %}
+        <a href="{{ certificate.certificate_file.url }}" target="_blank" class="view-btn">
+            View Certificate
         </a>
-    </div>
-
-    {% if certificates %}
-        <div class="certificate-grid">
-            {% for certificate in certificates %}
-                <div class="certificate-item">
-                    <h4>{{ certificate.title }}</h4>
-
-                    {% if certificate.description %}
-                        <p>{{ certificate.description }}</p>
-                    {% endif %}
-
-                    <div class="upload-links">
-                        {% if certificate.certificate_file %}
-                            <a href="{{ certificate.certificate_file.url }}" target="_blank">
-                                View Certificate
-                            </a>
-                        {% endif %}
-
-                        {% if certificate.project_link %}
-                            <a href="{{ certificate.project_link }}" target="_blank">
-                                Open Project Link
-                            </a>
-                        {% endif %}
-
-                        <form method="post" action="{% url 'delete_certificate_project' certificate.pk %}" class="inline-form">
-                            {% csrf_token %}
-                            <button type="submit" class="delete-link-btn">
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-state">
-            No certificate or project link uploaded yet.
-        </div>
     {% endif %}
-</section>
+
+    {% if certificate.project_link %}
+        <a href="{{ certificate.project_link }}" target="_blank" class="view-btn">
+            Open Project Link
+        </a>
+    {% endif %}
+
+    <form method="post" action="{% url 'delete_certificate_project' certificate.pk %}" class="inline-form">
+        {% csrf_token %}
+        <button type="submit" class="delete-btn">Delete</button>
+    </form>
+</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">No certificate or project link uploaded yet.</div>
+        {% endif %}
+    </section>
 
     <section class="dash-card">
         <div class="section-head">
             <div>
                 <h2 class="card-title">Job and Internship Opportunities</h2>
-                <p class="card-subtitle">
-                    Explore published job or internship opportunities and apply using your SkillSphere profile.
-                </p>
+                <p class="card-subtitle">Explore published opportunities and apply using your SkillSphere profile.</p>
             </div>
-
-            <a href="{% url 'job_list' %}" class="dashboard-btn btn-primary">
-                View All Jobs
-            </a>
+            <a href="{% url 'job_list' %}" class="btn-main btn-primary">View All Jobs</a>
         </div>
 
         {% if job_posts %}
-            <div class="certificate-grid">
+            <div class="item-grid">
                 {% for job in job_posts %}
-                    <div class="certificate-item">
-                        <h4>{{ job.title }}</h4>
+                    <div class="item-card">
+                        <div class="item-top">
+                            <div>
+                                <h4>{{ job.title }}</h4>
+                                <p><strong>Company:</strong> {{ job.company_name }}</p>
+                            </div>
 
-                        <p>
-                            <strong>Company:</strong> {{ job.company_name }}<br>
-                            <strong>Location:</strong> {{ job.location|default:"Not specified" }}<br>
-                            <strong>Type:</strong> {{ job.get_job_type_display|default:job.job_type }}
-                        </p>
+                            {% if job.id in applied_job_ids %}
+                                <span class="pill accepted">Applied</span>
+                            {% endif %}
+                        </div>
 
-                        <p>
-                            {{ job.description|truncatewords:35 }}
-                        </p>
-
-                        {% if job.required_skills %}
-                            <p>
-                                <strong>Required Skills:</strong> {{ job.required_skills }}
-                            </p>
-                        {% endif %}
+                        <p><strong>Location:</strong> {{ job.location|default:"Not specified" }}</p>
+                        <p><strong>Type:</strong> {{ job.get_job_type_display|default:job.job_type }}</p>
 
                         {% if job.deadline %}
-                            <p>
-                                <strong>Deadline:</strong> {{ job.deadline|date:"d M Y" }}
-                            </p>
+                            <p><strong>Deadline:</strong> {{ job.deadline|date:"d M Y" }}</p>
                         {% endif %}
+
+                        <p>{{ job.description|truncatewords:35 }}</p>
+                        <p><strong>Required Skills:</strong> {{ job.required_skills }}</p>
 
                         <div class="item-actions">
                             {% if job.id in applied_job_ids %}
-                                <span class="status-pill accepted">
-                                    Already Applied
-                                </span>
+                                <span class="pill accepted">Already Applied</span>
                             {% else %}
-                                <a href="{% url 'apply_job' job.pk %}" class="dashboard-btn-small btn-primary">
-                                    Apply Now
-                                </a>
+                                <a href="{% url 'apply_job' job.pk %}" class="btn-small btn-primary">Apply Now</a>
                             {% endif %}
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">
-                No job or internship opportunities are available right now.
-            </div>
+            <div class="empty-box">No job or internship opportunities are available right now.</div>
         {% endif %}
     </section>
 
     <section class="dash-card">
-        <h2 class="card-title">My Job Applications</h2>
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">My Job Applications</h2>
+                <p class="card-subtitle">Track your submitted applications and recruiter interview messages.</p>
+            </div>
+        </div>
 
         {% if my_applications %}
-            <div class="request-grid">
+            <div class="item-grid">
                 {% for application in my_applications %}
-                    <div class="request-item">
-                        <h4>{{ application.job.title }}</h4>
-
-                        <p>
-                            <strong>Company:</strong> {{ application.job.company_name }}
-                        </p>
-
-                        <p>
-                            <strong>Status:</strong>
-                            <span class="status-pill {{ application.status }}">
-                                {{ application.get_status_display }}
-                            </span>
-                        </p>
+                    <div class="item-card">
+                        <div class="item-top">
+                            <div>
+                                <h4>{{ application.job.title }}</h4>
+                                <p><strong>Company:</strong> {{ application.job.company_name }}</p>
+                            </div>
+                            <span class="pill {{ application.status }}">{{ application.get_status_display }}</span>
+                        </div>
 
                         {% if application.recruiter_note %}
-                            <p>
-                                <strong>Recruiter Note:</strong>
-                                {{ application.recruiter_note }}
-                            </p>
+                            <p><strong>Recruiter Note:</strong> {{ application.recruiter_note }}</p>
                         {% else %}
-                            <p>
-                                <strong>Recruiter Note:</strong>
-                                No recruiter note yet.
-                            </p>
+                            <p><strong>Recruiter Note:</strong> No recruiter note yet.</p>
                         {% endif %}
 
-                        <p>
-                            <strong>Applied on:</strong>
-                            {{ application.applied_at|date:"d M Y, h:i A" }}
-                        </p>
+                        <p><strong>Applied on:</strong> {{ application.applied_at|date:"d M Y, h:i A" }}</p>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">
-                You have not applied for any job or internship yet.
-            </div>
+            <div class="empty-box">You have not applied for any job or internship yet.</div>
         {% endif %}
     </section>
 
