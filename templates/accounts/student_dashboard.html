@@ -4,8 +4,6 @@
 
 {% block extra_css %}
 <style>
-
-
     .dash-wrap {
         max-width: 1220px;
         margin: 0 auto;
@@ -83,7 +81,8 @@
 
     .btn-main,
     .btn-small,
-    .delete-btn {
+    .delete-btn,
+    .view-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -91,7 +90,7 @@
         border: 1px solid transparent;
         cursor: pointer;
         font-weight: 900;
-        color: #ffffff;
+        color: #ffffff !important;
         transition: 0.22s ease;
         font-family: inherit;
         white-space: nowrap;
@@ -105,7 +104,8 @@
     }
 
     .btn-small,
-    .delete-btn {
+    .delete-btn,
+    .view-btn {
         min-height: 40px;
         padding: 0 14px;
         border-radius: 12px;
@@ -117,7 +117,8 @@
         box-shadow: 0 14px 28px rgba(110,168,254,0.18);
     }
 
-    .btn-secondary {
+    .btn-secondary,
+    .view-btn {
         background: rgba(255,255,255,0.08);
         border-color: rgba(255,255,255,0.16);
     }
@@ -133,10 +134,11 @@
 
     .btn-main:hover,
     .btn-small:hover,
-    .delete-btn:hover {
+    .delete-btn:hover,
+    .view-btn:hover {
         transform: translateY(-2px);
         filter: brightness(1.06);
-        color: #ffffff;
+        color: #ffffff !important;
     }
 
     .inline-form {
@@ -291,14 +293,18 @@
         background: linear-gradient(90deg, #6ea8fe, #22c55e);
     }
 
+    .proof-box {
+        margin-top: 14px;
+    }
+
     .proof-box h5 {
         color: #f8fbff;
         margin: 0 0 10px;
         font-size: 1rem;
     }
 
-    a {
-        color: #93c5fd;
+    .link-row {
+        margin-top: 16px;
     }
 
     .empty-box {
@@ -330,7 +336,8 @@
 
         .btn-main,
         .btn-small,
-        .delete-btn {
+        .delete-btn,
+        .view-btn {
             width: 100%;
         }
 
@@ -338,37 +345,6 @@
             flex-direction: column;
         }
     }
-
-    .view-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 40px;
-    padding: 0 14px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-size: 0.82rem;
-    font-weight: 900;
-    color: #ffffff;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.16);
-    transition: 0.22s ease;
-    white-space: nowrap;
-}
-
-.view-btn:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.06);
-    color: #ffffff;
-}
-
-.link-row {
-    margin-top: 16px;
-}
-
-.link-row a {
-    color: #ffffff;
-}
 </style>
 {% endblock %}
 
@@ -408,14 +384,6 @@
             </form>
         </div>
     </section>
-
-    {% if messages %}
-        <div class="message-box">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
 
     <section class="dash-card">
         <div class="section-head">
@@ -509,6 +477,7 @@
                         </div>
 
                         <p><strong>Learning Goal:</strong> {{ enrollment.description|default:"No learning goal added." }}</p>
+
                         <p>
                             <strong>Mentor:</strong>
                             {% if enrollment.mentor %}
@@ -518,19 +487,33 @@
                             {% endif %}
                         </p>
 
-                        <div class="link-row">
-    {% if skill.proof_file %}
-        <a href="{{ skill.proof_file.url }}" target="_blank" class="view-btn">
-            View Proof File
-        </a>
-    {% endif %}
+                        <div class="proof-box">
+                            <h5>Submitted Learning Proof</h5>
 
-    {% if skill.proof_link %}
-        <a href="{{ skill.proof_link }}" target="_blank" class="view-btn">
-            Open Proof Link
-        </a>
-    {% endif %}
-</div>
+                            {% if enrollment.proof_file %}
+                                <div class="link-row">
+                                    <a href="{{ enrollment.proof_file.url }}" target="_blank" class="view-btn">
+                                        View Proof File
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            {% if enrollment.proof_link %}
+                                <div class="link-row">
+                                    <a href="{{ enrollment.proof_link }}" target="_blank" class="view-btn">
+                                        Open Proof Link
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            {% if enrollment.proof_note %}
+                                <p><strong>Proof Note:</strong> {{ enrollment.proof_note }}</p>
+                            {% endif %}
+
+                            {% if not enrollment.proof_file and not enrollment.proof_link and not enrollment.proof_note %}
+                                <p>No proof submitted yet.</p>
+                            {% endif %}
+                        </div>
 
                         <div class="item-actions">
                             <a href="{% url 'submit_skill_enrollment_proof' enrollment.id %}" class="btn-small btn-primary">
@@ -583,10 +566,15 @@
 
                         <div class="link-row">
                             {% if skill.proof_file %}
-                                <a href="{{ skill.proof_file.url }}" target="_blank">View Proof File</a>
+                                <a href="{{ skill.proof_file.url }}" target="_blank" class="view-btn">
+                                    View Proof File
+                                </a>
                             {% endif %}
+
                             {% if skill.proof_link %}
-                                <a href="{{ skill.proof_link }}" target="_blank">Open Proof Link</a>
+                                <a href="{{ skill.proof_link }}" target="_blank" class="view-btn">
+                                    Open Proof Link
+                                </a>
                             {% endif %}
                         </div>
 
@@ -626,24 +614,30 @@
         </div>
 
         {% if certificates %}
-            <div class="link-row">
-    {% if certificate.certificate_file %}
-        <a href="{{ certificate.certificate_file.url }}" target="_blank" class="view-btn">
-            View Certificate
-        </a>
-    {% endif %}
+            <div class="item-grid">
+                {% for certificate in certificates %}
+                    <div class="item-card">
+                        <h4>{{ certificate.title }}</h4>
+                        <p>{{ certificate.description|default:"No description added." }}</p>
 
-    {% if certificate.project_link %}
-        <a href="{{ certificate.project_link }}" target="_blank" class="view-btn">
-            Open Project Link
-        </a>
-    {% endif %}
+                        <div class="link-row">
+                            {% if certificate.certificate_file %}
+                                <a href="{{ certificate.certificate_file.url }}" target="_blank" class="view-btn">
+                                    View Certificate
+                                </a>
+                            {% endif %}
 
-    <form method="post" action="{% url 'delete_certificate_project' certificate.pk %}" class="inline-form">
-        {% csrf_token %}
-        <button type="submit" class="delete-btn">Delete</button>
-    </form>
-</div>
+                            {% if certificate.project_link %}
+                                <a href="{{ certificate.project_link }}" target="_blank" class="view-btn">
+                                    Open Project Link
+                                </a>
+                            {% endif %}
+
+                            <form method="post" action="{% url 'delete_certificate_project' certificate.pk %}" class="inline-form">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
