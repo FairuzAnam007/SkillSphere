@@ -20,6 +20,7 @@ class SignupForm(UserCreationForm):
         ("recruiter", "Recruiter"),
     ]
 
+    
     first_name = forms.CharField(max_length=150, required=True)
     last_name = forms.CharField(max_length=150, required=True)
     email = forms.EmailField(required=True)
@@ -55,7 +56,7 @@ class SignupForm(UserCreationForm):
                 field.widget.attrs.update({"placeholder": placeholders[name]})
 
 
-class CustomAuthenticationForm(AuthenticationForm):
+class  CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(
         widget=forms.TextInput(attrs={
             "class": "form-control",
@@ -71,7 +72,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class StudentProfileForm(forms.ModelForm):
-    class Meta:
+    class  Meta:
         model = StudentProfile
         fields = [
             "profile_picture",
