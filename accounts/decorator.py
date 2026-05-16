@@ -1,10 +1,7 @@
 from functools import wraps
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-
 from .models import UserProfile
-
 
 def role_required(*allowed_roles):
     def decorator(view_func):
@@ -14,7 +11,8 @@ def role_required(*allowed_roles):
             if request.user.is_superuser:
                 return view_func(request, *args, **kwargs)
 
-            profile, created = UserProfile.objects.get_or_create(
+            profile, created = UserProfile.objects.get_or_create
+            (
                 user=request.user,
                 defaults={"role": "student"},
             )
