@@ -1,11 +1,26 @@
 from django.contrib import admin
 
+from .models import (
+    UserProfile,
+    StudentProfile,
+    CertificateProject,
+    SkillCategory,
+    Skill,
+    MentorshipRequest,
+    SkillVerificationRequest,
+    VerificationLog,
+    RecruiterShortlist,
+    JobPost,
+    JobApplication,
+    SkillEnrollment,
+    ConversationMessage,
+    Notification,
+)
 
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = 
-    (
+    list_display = (
         "id",
         "user",
         "role",
@@ -13,14 +28,12 @@ class UserProfileAdmin(admin.ModelAdmin):
         "failed_login_attempts",
     )
 
-    list_filter = 
-    (
+    list_filter = (
         "role",
         "is_locked",
     )
 
-    search_fields =
-    (
+    search_fields = (
         "user__username",
         "user__first_name",
         "user__last_name",
@@ -30,8 +43,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(StudentProfile)
 class StudentProfileAdmin(admin.ModelAdmin):
-    list_display =
-    (
+    list_display = (
         "id",
         "user",
         "department",
@@ -40,8 +52,7 @@ class StudentProfileAdmin(admin.ModelAdmin):
         "cgpa",
     )
 
-    search_fields =
-    (
+    search_fields = (
         "user__username",
         "user__first_name",
         "user__last_name",
@@ -49,8 +60,7 @@ class StudentProfileAdmin(admin.ModelAdmin):
         "university",
     )
 
-    list_filter =
-    (
+    list_filter = (
         "department",
         "semester",
         "session",
@@ -59,39 +69,34 @@ class StudentProfileAdmin(admin.ModelAdmin):
 
 @admin.register(CertificateProject)
 class CertificateProjectAdmin(admin.ModelAdmin):
-    list_display =
-    (
+    list_display = (
         "id",
         "title",
         "student_profile",
         "created_at",
     )
 
-    search_fields = 
-    (
+    search_fields = (
         "title",
         "student_profile__user__username",
         "student_profile__user__first_name",
         "student_profile__user__last_name",
     )
 
-    list_filter =
-    (
+    list_filter = (
         "created_at",
     )
 
 
 @admin.register(SkillCategory)
 class SkillCategoryAdmin(admin.ModelAdmin):
-    list_display = 
-    (
+    list_display = (
         "id",
         "name",
         "description",
     )
 
-    search_fields = 
-    (
+    search_fields = (
         "name",
         "description",
     )
@@ -99,8 +104,7 @@ class SkillCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    list_display = 
-    (
+    list_display = (
         "id",
         "name",
         "student_profile",
@@ -111,8 +115,7 @@ class SkillAdmin(admin.ModelAdmin):
         "created_at",
     )
 
-    search_fields =
-    (
+    search_fields = (
         "name",
         "description",
         "student_profile__user__username",
@@ -120,8 +123,7 @@ class SkillAdmin(admin.ModelAdmin):
         "student_profile__user__last_name",
     )
 
-    list_filter =
-    (
+    list_filter = (
         "category",
         "verification_status",
         "proficiency_level",
@@ -131,8 +133,7 @@ class SkillAdmin(admin.ModelAdmin):
 
 @admin.register(MentorshipRequest)
 class MentorshipRequestAdmin(admin.ModelAdmin):
-    list_display =
-    (
+    list_display = (
         "id",
         "student",
         "teacher",
@@ -141,8 +142,7 @@ class MentorshipRequestAdmin(admin.ModelAdmin):
         "responded_at",
     )
 
-    search_fields =
-    (
+    search_fields = (
         "student__username",
         "student__first_name",
         "student__last_name",
@@ -151,8 +151,7 @@ class MentorshipRequestAdmin(admin.ModelAdmin):
         "teacher__last_name",
     )
 
-    list_filter = 
-    (
+    list_filter = (
         "status",
         "created_at",
         "responded_at",
@@ -161,8 +160,7 @@ class MentorshipRequestAdmin(admin.ModelAdmin):
 
 @admin.register(SkillVerificationRequest)
 class SkillVerificationRequestAdmin(admin.ModelAdmin):
-    list_display =
-    (
+    list_display = (
         "id",
         "student",
         "teacher",
@@ -172,8 +170,7 @@ class SkillVerificationRequestAdmin(admin.ModelAdmin):
         "responded_at",
     )
 
-    search_fields = 
-    (
+    search_fields = (
         "student__username",
         "student__first_name",
         "student__last_name",
@@ -183,8 +180,7 @@ class SkillVerificationRequestAdmin(admin.ModelAdmin):
         "skill__name",
     )
 
-    list_filter =
-    (
+    list_filter = (
         "status",
         "requested_at",
         "responded_at",
@@ -193,8 +189,7 @@ class SkillVerificationRequestAdmin(admin.ModelAdmin):
 
 @admin.register(VerificationLog)
 class VerificationLogAdmin(admin.ModelAdmin):
-    list_display =
-    (
+    list_display = (
         "id",
         "action",
         "actor",
@@ -204,8 +199,7 @@ class VerificationLogAdmin(admin.ModelAdmin):
         "created_at",
     )
 
-    search_fields =
-    (
+    search_fields = (
         "actor__username",
         "student__username",
         "teacher__username",
@@ -213,8 +207,7 @@ class VerificationLogAdmin(admin.ModelAdmin):
         "note",
     )
 
-    list_filter =
-    (
+    list_filter = (
         "action",
         "created_at",
     )
@@ -222,16 +215,14 @@ class VerificationLogAdmin(admin.ModelAdmin):
 
 @admin.register(RecruiterShortlist)
 class RecruiterShortlistAdmin(admin.ModelAdmin):
-    list_display =
-    (
+    list_display = (
         "id",
         "recruiter_name",
         "candidate_name",
-        "created_at_safe",
+        "created_at",
     )
 
-    search_fields =
-    (
+    search_fields = (
         "recruiter__username",
         "recruiter__first_name",
         "recruiter__last_name",
@@ -250,11 +241,154 @@ class RecruiterShortlistAdmin(admin.ModelAdmin):
             user = obj.student_profile.user
             full_name = f"{user.first_name} {user.last_name}".strip()
             return full_name or user.username
+
         return "N/A"
 
     candidate_name.short_description = "Candidate"
 
-    def created_at_safe(self, obj):
-        return getattr(obj, "created_at", "N/A")
 
-    created_at_safe.short_description = "Created At"
+@admin.register(JobPost)
+class JobPostAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "title",
+        "company_name",
+        "job_type",
+        "recruiter",
+        "is_active",
+        "deadline",
+        "created_at",
+    )
+
+    search_fields = (
+        "title",
+        "company_name",
+        "required_skills",
+        "recruiter__username",
+    )
+
+    list_filter = (
+        "job_type",
+        "is_active",
+        "deadline",
+        "created_at",
+    )
+
+
+@admin.register(JobApplication)
+class JobApplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "job",
+        "student",
+        "status",
+        "applied_at",
+        "updated_at",
+    )
+
+    search_fields = (
+        "job__title",
+        "job__company_name",
+        "student__username",
+        "student__first_name",
+        "student__last_name",
+    )
+
+    list_filter = (
+        "status",
+        "applied_at",
+        "updated_at",
+    )
+
+
+@admin.register(SkillEnrollment)
+class SkillEnrollmentAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "skill_title",
+        "student_name",
+        "mentor",
+        "status",
+        "progress",
+        "created_at",
+        "updated_at",
+    )
+
+    search_fields = (
+        "skill_title",
+        "description",
+        "student_profile__user__username",
+        "student_profile__user__first_name",
+        "student_profile__user__last_name",
+        "mentor__username",
+        "mentor__first_name",
+        "mentor__last_name",
+    )
+
+    list_filter = (
+        "status",
+        "progress",
+        "created_at",
+        "updated_at",
+    )
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "verified_at",
+    )
+
+    def student_name(self, obj):
+        user = obj.student_profile.user
+
+        full_name = f"{user.first_name} {user.last_name}".strip()
+
+        return full_name or user.username
+
+    student_name.short_description = "Student"
+
+    @admin.register(ConversationMessage)
+    class ConversationMessageAdmin(admin.ModelAdmin):
+        list_display = (
+            "id",
+            "sender",
+            "receiver",
+            "subject",
+            "is_read",
+            "created_at",
+        )
+
+        search_fields = (
+            "sender__username",
+            "receiver__username",
+            "subject",
+            "message",
+        )
+
+        list_filter = (
+            "is_read",
+            "created_at",
+        )
+
+    @admin.register(Notification)
+    class NotificationAdmin(admin.ModelAdmin):
+        list_display = (
+            "id",
+            "user",
+            "title",
+            "notification_type",
+            "is_read",
+            "created_at",
+        )
+
+        search_fields = (
+            "user__username",
+            "title",
+            "message",
+        )
+
+        list_filter = (
+            "notification_type",
+            "is_read",
+            "created_at",
+        )
