@@ -106,6 +106,7 @@ class Skill(models.Model):
         ("Intermediate", "Intermediate"),
         ("Advanced", "Advanced"),
         ("Expert", "Expert"),
+        
     ]
 
     student_profile = models.ForeignKey(
@@ -186,11 +187,11 @@ class MentorshipRequest(models.Model):
         unique_together = ("student", "teacher")
         ordering = ["-created_at"]
 
-    def __str__(self):
+     def __str__(self):
         return f"{self.student.username} to {self.teacher.username} - {self.status}"
 
 
-class SkillVerificationRequest(models.Model):
+  class SkillVerificationRequest(models.Model):
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("approved", "Approved"),
@@ -230,7 +231,7 @@ class SkillVerificationRequest(models.Model):
         return f"{self.skill.name} - {self.student.username} - {self.status}"
 
 
-class VerificationLog(models.Model):
+ class VerificationLog(models.Model):
     ACTION_CHOICES = [
         ("mentorship_requested", "Mentorship Requested"),
         ("mentorship_accepted", "Mentorship Accepted"),
@@ -279,7 +280,7 @@ class VerificationLog(models.Model):
         return f"{self.get_action_display()} - {self.created_at}"
 
 
-class RecruiterShortlist(models.Model):
+ class RecruiterShortlist(models.Model):
     recruiter = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -301,7 +302,7 @@ class RecruiterShortlist(models.Model):
         return f"{self.recruiter.username} shortlisted {self.student_profile.user.username}"
 
 
-class JobPost(models.Model):
+ class JobPost(models.Model):
     JOB_TYPE_CHOICES = [
         ("internship", "Internship"),
         ("part_time", "Part Time"),
@@ -338,7 +339,7 @@ class JobPost(models.Model):
         return f"{self.title} - {self.company_name}"
 
 
-class JobApplication(models.Model):
+ class JobApplication(models.Model):
     STATUS_CHOICES = [
         ("applied", "Applied"),
         ("reviewing", "Reviewing"),
@@ -359,22 +360,22 @@ class JobApplication(models.Model):
     )
     cover_letter = models.TextField(blank=True)
     cv_file = models.FileField(
-        upload_to="job_applications/cv/",
-        blank=True,
-        null=True
+         upload_to="job_applications/cv/",
+         blank=True,
+         null=True
     )
     status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default="applied"
+         max_length=20,
+         choices=STATUS_CHOICES,
+         default="applied"
     )
     recruiter_note = models.TextField(blank=True)
-    applied_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True)
+     applied_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ("job", "student")
-        ordering = ["-applied_at"]
+         unique_together = ("job", "student")
+         ordering = ["-applied_at"]
 
     def __str__(self):
-        return f"{self.student.username} applied for {self.job.title}"
+         return f"{self.student.username} applied for {self.job.title}"
