@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-urlpatterns = 
+urlpatterns  = 
 [
     path("admin/", admin.site.urls),
     path("", include("accounts.urls")),
@@ -11,5 +11,5 @@ urlpatterns =
 
 handler403 = "accounts.views.permission_denied_view"
 
-if settings.DEBUG:
+if  settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
