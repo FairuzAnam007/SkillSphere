@@ -11,6 +11,7 @@
         <p class="auth-text">
             Enter your username and password to continue.
         </p>
+        
 
         <form method="post" class="form-grid">
             {% csrf_token %}
@@ -40,6 +41,7 @@
         <p class="helper-text">
     Forgot your password? <a href="{% url 'password_reset' %}">Reset it here</a>
 </p>
+        
     </div>
 </section>
 {% endblock %}
