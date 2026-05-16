@@ -1,17 +1,5 @@
 from django.contrib import admin
 
-from .models import 
-(
-    UserProfile,
-    StudentProfile,
-    CertificateProject,
-    SkillCategory,
-    Skill,
-    MentorshipRequest,
-    SkillVerificationRequest,
-    VerificationLog,
-    RecruiterShortlist,
-)
 
 
 @admin.register(UserProfile)
