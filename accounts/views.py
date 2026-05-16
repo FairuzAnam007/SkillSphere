@@ -67,6 +67,7 @@ def signup_view(request):
                     "role": selected_role,
                     "is_locked": False,
                     "failed_login_attempts": 0,
+             
                 },
             )
 
@@ -132,7 +133,8 @@ def get_student_profile(user):
 # =========================
 # Student Dashboard
 # =========================
-
+ 
+ 
 @login_required
 @role_required("student")
 def student_dashboard(request):
@@ -190,6 +192,7 @@ def student_dashboard(request):
 # Teacher Dashboard
 # =========================
 
+
 @login_required
 @role_required("teacher")
 def teacher_dashboard(request):
@@ -232,7 +235,9 @@ def teacher_dashboard(request):
         "pending_skill_requests": pending_verification_requests,
         "completed_skill_requests": completed_verification_requests,
 
-        "logs": logs,
+     
+         "logs": logs,
+        
     }
 
     return render(request, "accounts/teacher_dashboard.html", context)
@@ -378,6 +383,7 @@ def update_student_profile(request):
             "title": "Update Student Profile",
             "button_text": "Update Profile",
         },
+        
     )
 
 
