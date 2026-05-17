@@ -4,360 +4,358 @@
 
 {% block extra_css %}
 <style>
-    .teacher-wrap {
-        width: min(1180px, calc(100% - 32px));
-        margin: 30px auto 60px;
+    .dash-wrap {
+        max-width: 1220px;
+        margin: 0 auto;
         display: grid;
         gap: 24px;
+        animation: fadeUp 0.8s ease;
     }
 
-    .teacher-hero {
+    .hero-card,
+    .dash-card {
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.065));
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow: 0 18px 50px rgba(0,0,0,0.20);
+        backdrop-filter: blur(16px);
+    }
+
+    .hero-card {
         padding: 34px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .teacher-hero::after {
-        content: "";
-        position: absolute;
-        width: 280px;
-        height: 280px;
-        right: -80px;
-        top: -90px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent 70%);
-        pointer-events: none;
-    }
-
-    .teacher-hero-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .teacher-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        background: rgba(110, 168, 254, 0.14);
-        border: 1px solid rgba(110, 168, 254, 0.22);
-        color: #dbeafe;
-        font-size: 0.88rem;
-        font-weight: 700;
-        margin-bottom: 14px;
-    }
-
-    .teacher-hero h1 {
-        font-size: clamp(2.1rem, 4vw, 3.5rem);
-        line-height: 1;
-        margin-bottom: 12px;
-        font-weight: 900;
-        color: #f2f7ff;
-    }
-
-    .teacher-hero p {
-        max-width: 720px;
-        color: #c8d6ec;
-        font-size: 1.02rem;
-        line-height: 1.7;
-    }
-
-    .teacher-actions {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        position: relative;
-        z-index: 2;
-    }
-
-    .dash-btn {
-        border: 0;
-        text-decoration: none;
-        padding: 13px 20px;
-        border-radius: 16px;
-        font-weight: 800;
-        cursor: pointer;
-        transition: 0.25s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 0.95rem;
-    }
-
-    .dash-btn:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.07);
-    }
-
-    .dash-btn.primary {
-        background: linear-gradient(135deg, #6ea8fe, #8b5cf6);
-        box-shadow: 0 18px 35px rgba(110, 168, 254, 0.22);
-    }
-
-    .dash-btn.soft {
-        background: rgba(255, 255, 255, 0.09);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        color: #eaf2ff;
-    }
-
-    .dash-btn.danger {
-        background: linear-gradient(135deg, #fb7185, #ef4444);
-    }
-
-    .dashboard-stats {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
+        gap: 24px;
     }
 
-    .stat-card {
-        padding: 22px;
-        border-radius: 22px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.13);
-        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
-    }
-
-    .stat-card span {
-        display: block;
-        color: #aebbd2;
-        font-size: 0.86rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
-
-    .stat-card strong {
-        font-size: 2rem;
-        color: #ffffff;
-    }
-
-    .teacher-section {
+    .dash-card {
         padding: 28px;
+    }
+
+    .eyebrow {
+        color: #93c5fd;
+        font-size: 0.85rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin: 0 0 8px;
+    }
+
+    h1 {
+        font-size: clamp(2.2rem, 4vw, 3.4rem);
+        color: #f8fbff;
+        margin: 0 0 12px;
+        font-weight: 900;
+    }
+
+    .card-title {
+        color: #f8fbff;
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: 900;
+    }
+
+    .muted,
+    .card-subtitle,
+    .item-card p {
+        color: var(--muted);
+        line-height: 1.7;
     }
 
     .section-head {
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: flex-start;
         gap: 16px;
-        margin-bottom: 18px;
-    }
-
-    .section-head h2 {
-        font-size: 1.45rem;
-        font-weight: 850;
-        color: #f3f7ff;
-    }
-
-    .section-tag {
-        font-size: 0.78rem;
-        font-weight: 800;
-        padding: 7px 11px;
-        border-radius: 999px;
-        color: #cde2ff;
-        background: rgba(110, 168, 254, 0.12);
-        border: 1px solid rgba(110, 168, 254, 0.18);
-    }
-
-    .empty-state {
-        padding: 22px;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.055);
-        border: 1px dashed rgba(255, 255, 255, 0.16);
-        color: #b8c6dc;
-        line-height: 1.6;
-    }
-
-    .table-box {
-        width: 100%;
-        overflow-x: auto;
-        border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.13);
-    }
-
-    .table-box table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 760px;
-    }
-
-    .table-box th,
-    .table-box td {
-        padding: 15px 16px;
-        text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-        color: #dce8fb;
-        vertical-align: middle;
-    }
-
-    .table-box th {
-        background: rgba(255, 255, 255, 0.08);
-        color: #f2f7ff;
-        font-size: 0.86rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .table-box tr:last-child td {
-        border-bottom: none;
-    }
-
-    .table-box a {
-        color: #9cc7ff;
-        font-weight: 800;
-        text-decoration: none;
-    }
-
-    .mini-actions {
-        display: flex;
-        gap: 8px;
         flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .action-row,
+    .item-actions,
+    .progress-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .btn-main,
+    .btn-small {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-weight: 900;
+        color: #ffffff;
+        transition: 0.22s ease;
+        font-family: inherit;
+        white-space: nowrap;
+    }
+
+    .btn-main {
+        min-height: 50px;
+        padding: 0 20px;
+        border-radius: 15px;
+        font-size: 0.95rem;
     }
 
     .btn-small {
-        padding: 9px 13px;
+        min-height: 40px;
+        padding: 0 14px;
         border-radius: 12px;
-        border: 0;
-        color: white;
-        font-weight: 800;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        font-size: 0.84rem;
+        font-size: 0.82rem;
     }
 
-    .btn-small.approve {
-        background: linear-gradient(135deg, #22c55e, #16a34a);
+    .btn-primary {
+        background: linear-gradient(135deg, #6ea8fe, #7c3aed);
+        box-shadow: 0 14px 28px rgba(110,168,254,0.18);
     }
 
-    .btn-small.reject {
+    .btn-secondary {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.16);
+    }
+
+    .btn-danger {
         background: linear-gradient(135deg, #fb7185, #ef4444);
     }
 
-    .student-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
+    .btn-success {
+        background: linear-gradient(135deg, #22c55e, #14b8a6);
     }
 
-    .student-card,
-    .log-card {
-        padding: 20px;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.07);
-        border: 1px solid rgba(255, 255, 255, 0.13);
-    }
-
-    .student-card h3 {
+    .btn-main:hover,
+    .btn-small:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.06);
         color: #ffffff;
-        margin-bottom: 10px;
     }
 
-    .student-card p,
-    .log-card p {
-        color: #c4d1e6;
-        line-height: 1.6;
-    }
-
-    .status-badge {
+    .inline-form {
         display: inline-flex;
-        padding: 7px 11px;
-        border-radius: 999px;
-        font-weight: 850;
-        font-size: 0.78rem;
-        text-transform: capitalize;
-    }
-
-    .status-badge.approved {
-        background: rgba(34, 197, 94, 0.14);
-        color: #bbf7d0;
-        border: 1px solid rgba(34, 197, 94, 0.24);
-    }
-
-    .status-badge.rejected {
-        background: rgba(239, 68, 68, 0.14);
-        color: #fecaca;
-        border: 1px solid rgba(239, 68, 68, 0.24);
-    }
-
-    .status-badge.pending {
-        background: rgba(251, 191, 36, 0.14);
-        color: #fde68a;
-        border: 1px solid rgba(251, 191, 36, 0.24);
-    }
-
-    .log-list {
-        display: grid;
-        gap: 14px;
-    }
-
-    .small-text {
-        color: #91a4c2 !important;
-        font-size: 0.86rem;
-        margin-top: 8px;
+        margin: 0;
     }
 
     .message-box {
         padding: 16px 20px;
         border-radius: 18px;
-        background: rgba(34, 197, 94, 0.12);
-        border: 1px solid rgba(34, 197, 94, 0.20);
+        background: rgba(34,197,94,0.12);
+        border: 1px solid rgba(34,197,94,0.22);
         color: #dcfce7;
+        font-weight: 800;
     }
 
-    @media (max-width: 900px) {
-        .teacher-hero {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .dashboard-stats {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .student-grid {
-            grid-template-columns: 1fr;
-        }
+    .item-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+        gap: 16px;
     }
 
-    @media (max-width: 560px) {
-        .dashboard-stats {
-            grid-template-columns: 1fr;
-        }
+    .item-card {
+        border-radius: 22px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.055)),
+            radial-gradient(circle at top right, rgba(110,168,254,0.12), transparent 35%);
+        border: 1px solid rgba(255,255,255,0.12);
+        padding: 20px;
+        box-shadow: 0 18px 40px rgba(0,0,0,0.16);
+    }
 
-        .teacher-section,
-        .teacher-hero {
+    .item-card h4 {
+        color: #f8fbff;
+        font-size: 1.18rem;
+        margin: 0 0 10px;
+        font-weight: 900;
+    }
+
+    .item-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 900;
+        color: #dbeafe;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        white-space: nowrap;
+    }
+
+    .pill.accepted,
+    .pill.approved,
+    .pill.completed {
+        color: #bbf7d0;
+        background: rgba(34,197,94,0.16);
+        border-color: rgba(34,197,94,0.25);
+    }
+
+    .pill.pending,
+    .pill.in_progress {
+        color: #fde68a;
+        background: rgba(245,158,11,0.16);
+        border-color: rgba(245,158,11,0.25);
+    }
+
+    .pill.rejected {
+        color: #fecaca;
+        background: rgba(239,68,68,0.16);
+        border-color: rgba(239,68,68,0.25);
+    }
+
+    .detail-box {
+        border-radius: 18px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.11);
+        padding: 16px;
+        margin: 12px 0;
+    }
+
+    .detail-box h5 {
+        color: #f8fbff;
+        margin: 0 0 10px;
+        font-size: 1rem;
+        font-weight: 900;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .detail-grid div {
+        padding: 12px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .detail-grid span {
+        display: block;
+        color: #9fb0ca;
+        font-size: 0.78rem;
+        font-weight: 900;
+        margin-bottom: 5px;
+    }
+
+    .detail-grid strong {
+        color: #f8fbff;
+        word-break: break-word;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.10);
+        margin: 12px 0;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #6ea8fe, #22c55e);
+    }
+
+    textarea {
+        width: 100%;
+        min-height: 105px;
+        border-radius: 16px;
+        padding: 14px 16px;
+        border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.08);
+        color: #ffffff;
+        font-family: inherit;
+        resize: vertical;
+        outline: none;
+    }
+
+    label {
+        color: #f8fbff;
+        font-weight: 900;
+    }
+
+    .empty-box {
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.10);
+        color: var(--muted);
+    }
+
+    a {
+        color: #93c5fd;
+    }
+
+    @media (max-width: 760px) {
+        .hero-card,
+        .dash-card {
             padding: 22px;
+        }
+
+        .action-row,
+        .item-actions,
+        .progress-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-main,
+        .btn-small {
+            width: 100%;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .item-top {
+            flex-direction: column;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="teacher-wrap">
+<div class="dash-wrap">
 
-    <section class="glass-card teacher-hero">
-        <div class="teacher-hero-content">
-            <div class="teacher-badge">Teacher Panel</div>
+    <section class="hero-card">
+        <div>
+            <p class="eyebrow">Welcome</p>
             <h1>Teacher Dashboard</h1>
-            <p>
-                Manage student mentoring connections, verify skills, assign proficiency levels,
-                and maintain clear verification records.
+            <p class="muted">
+                Hello, {{ user.get_full_name|default:user.username }}.
+                Review students, accept connections, message students, check learning proof, and update progress.
             </p>
         </div>
 
-        <div class="teacher-actions">
-            <a href="{% url 'home' %}" class="dash-btn soft">Home</a>
+        <div class="action-row">
+            <a href="{% url 'home' %}" class="btn-main btn-secondary">Home</a>
+            <a href="{% url 'message_inbox' %}" class="btn-main btn-secondary">Messages</a>
 
-            <form method="post" action="{% url 'logout' %}">
+            <a href="{% url 'notification_list' %}" class="btn-main btn-secondary">
+                Notifications
+                {% if unread_notifications_count %}
+                    ({{ unread_notifications_count }})
+                {% endif %}
+            </a>
+
+            <form method="post" action="{% url 'logout' %}" class="inline-form">
                 {% csrf_token %}
-                <button type="submit" class="dash-btn danger">Logout</button>
+                <button type="submit" class="btn-main btn-danger">Logout</button>
             </form>
         </div>
     </section>
@@ -370,262 +368,229 @@
         </div>
     {% endif %}
 
-    <div class="dashboard-stats">
-        <div class="stat-card">
-            <span>Pending Connections</span>
-            <strong>{{ pending_mentorship_requests|length }}</strong>
-        </div>
-
-        <div class="stat-card">
-            <span>Connected Students</span>
-            <strong>{{ accepted_mentorship_requests|length }}</strong>
-        </div>
-
-        <div class="stat-card">
-            <span>Pending Verifications</span>
-            <strong>{{ pending_verification_requests|length }}</strong>
-        </div>
-
-        <div class="stat-card">
-            <span>Completed Verifications</span>
-            <strong>{{ completed_verification_requests|length }}</strong>
-        </div>
-    </div>
-
-    <section class="glass-card teacher-section">
+    <section class="dash-card">
         <div class="section-head">
-            <h2>Pending Student Connection Requests</h2>
-            <span class="section-tag">Mentorship</span>
+            <div>
+                <h2 class="card-title">Pending Teacher Connection Requests</h2>
+                <p class="card-subtitle">Accept or reject student connection requests.</p>
+            </div>
         </div>
 
-        {% if pending_mentorship_requests %}
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Message</th>
-                            <th>Requested On</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+        {% if pending_connections %}
+            <div class="item-grid">
+                {% for req in pending_connections %}
+                    <div class="item-card">
+                        <div class="item-top">
+                            <div>
+                                <h4>{{ req.student.get_full_name|default:req.student.username }}</h4>
+                                <p>{{ req.message|default:"No message added." }}</p>
+                            </div>
+                            <span class="pill pending">{{ req.get_status_display }}</span>
+                        </div>
 
-                    <tbody>
-                        {% for req in pending_mentorship_requests %}
-                            <tr>
-                                <td>
-                                    {% if req.student.first_name or req.student.last_name %}
-                                        {{ req.student.first_name }} {{ req.student.last_name }}
-                                    {% else %}
-                                        {{ req.student.username }}
-                                    {% endif %}
-                                </td>
+                        <div class="item-actions">
+                            <form method="post" action="{% url 'respond_mentorship_request' req.id 'accept' %}" class="inline-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-small btn-success">Accept</button>
+                            </form>
 
-                                <td>{{ req.message|default:"No message" }}</td>
-                                <td>{{ req.created_at|date:"d M Y" }}</td>
-
-                                <td>
-                                    <div class="mini-actions">
-                                        <form method="post" action="{% url 'respond_mentorship_request' req.pk 'accept' %}">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn-small approve">Accept</button>
-                                        </form>
-
-                                        <form method="post" action="{% url 'respond_mentorship_request' req.pk 'reject' %}">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn-small reject">Reject</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                            <form method="post" action="{% url 'respond_mentorship_request' req.id 'reject' %}" class="inline-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-small btn-danger">Reject</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">No pending connection requests.</div>
+            <div class="empty-box">No pending teacher connection request.</div>
         {% endif %}
     </section>
 
-    <section class="glass-card teacher-section">
+    <section class="dash-card">
         <div class="section-head">
-            <h2>Connected Students</h2>
-            <span class="section-tag">Active Links</span>
+            <div>
+                <h2 class="card-title">Accepted Student Connections</h2>
+                <p class="card-subtitle">You can message students after accepting their connection request.</p>
+            </div>
         </div>
 
-        {% if accepted_mentorship_requests %}
-            <div class="student-grid">
-                {% for req in accepted_mentorship_requests %}
-                    <div class="student-card">
-                        <h3>
-                            {% if req.student.first_name or req.student.last_name %}
-                                {{ req.student.first_name }} {{ req.student.last_name }}
-                            {% else %}
-                                {{ req.student.username }}
+        {% if accepted_connections %}
+            <div class="item-grid">
+                {% for req in accepted_connections %}
+                    <div class="item-card">
+                        <div class="item-top">
+                            <div>
+                                <h4>{{ req.student.get_full_name|default:req.student.username }}</h4>
+                                <p>{{ req.message|default:"No message added." }}</p>
+                            </div>
+                            <span class="pill accepted">{{ req.get_status_display }}</span>
+                        </div>
+
+                        <div class="item-actions">
+                            <a href="{% url 'send_message_to_user' req.student.id %}" class="btn-small btn-primary">Message Student</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">No accepted student connection yet.</div>
+        {% endif %}
+    </section>
+
+    <section class="dash-card">
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">Student Skill Enrollments</h2>
+                <p class="card-subtitle">See student details, learning goals, submitted proof, and update progress.</p>
+            </div>
+        </div>
+
+        {% if mentored_enrollments %}
+            <div class="item-grid">
+                {% for enrollment in mentored_enrollments %}
+                    <div class="item-card">
+                        <div class="item-top">
+                            <div>
+                                <h4>{{ enrollment.skill_title }}</h4>
+                                <p><strong>Student:</strong> {{ enrollment.student_profile.user.get_full_name|default:enrollment.student_profile.user.username }}</p>
+                            </div>
+                            <span class="pill {{ enrollment.status }}">{{ enrollment.get_status_display }}</span>
+                        </div>
+
+                        <div class="detail-box">
+                            <h5>Student Details</h5>
+                            <div class="detail-grid">
+                                <div><span>Email</span><strong>{{ enrollment.student_profile.user.email|default:"Not added" }}</strong></div>
+                                <div><span>Phone</span><strong>{{ enrollment.student_profile.phone_number|default:"Not added" }}</strong></div>
+                                <div><span>University</span><strong>{{ enrollment.student_profile.university|default:"Not added" }}</strong></div>
+                                <div><span>Department</span><strong>{{ enrollment.student_profile.department|default:"Not added" }}</strong></div>
+                                <div><span>Semester</span><strong>{{ enrollment.student_profile.semester|default:"Not added" }}</strong></div>
+                                <div><span>CGPA</span><strong>{{ enrollment.student_profile.cgpa|default:"Not added" }}</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-box">
+                            <h5>What the Student Wants to Learn</h5>
+                            <p><strong>Skill:</strong> {{ enrollment.skill_title }}</p>
+                            <p><strong>Learning Goal:</strong> {{ enrollment.description|default:"No learning goal added." }}</p>
+                        </div>
+
+                        <div class="detail-box">
+                            <h5>Submitted Learning Proof</h5>
+
+                            {% if enrollment.proof_file %}
+                                <p><strong>Proof File:</strong> <a href="{{ enrollment.proof_file.url }}" target="_blank">View Submitted File</a></p>
                             {% endif %}
-                        </h3>
 
-                        <p><strong>Status:</strong> Connected</p>
-                        <p><strong>Connected on:</strong> {{ req.responded_at|date:"d M Y" }}</p>
+                            {% if enrollment.proof_link %}
+                                <p><strong>Proof Link:</strong> <a href="{{ enrollment.proof_link }}" target="_blank">Open Proof Link</a></p>
+                            {% endif %}
+
+                            {% if enrollment.proof_note %}
+                                <p><strong>Proof Note:</strong> {{ enrollment.proof_note }}</p>
+                            {% endif %}
+
+                            {% if not enrollment.proof_file and not enrollment.proof_link and not enrollment.proof_note %}
+                                <p>No proof submitted yet. Ask the student to submit proof before updating progress.</p>
+                            {% endif %}
+                        </div>
+
+                        <p><strong>Current Progress:</strong> {{ enrollment.progress }}%</p>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ enrollment.progress }}%;"></div>
+                        </div>
+
+                        {% if enrollment.teacher_feedback %}
+                            <p><strong>Previous Feedback:</strong> {{ enrollment.teacher_feedback }}</p>
+                        {% endif %}
+
+                        {% if enrollment.verified_at %}
+                            <p><strong>Verified At:</strong> {{ enrollment.verified_at|date:"d M Y, h:i A" }}</p>
+                        {% endif %}
+
+                        <form method="post" action="{% url 'update_skill_enrollment_status' enrollment.id 'in_progress' %}">
+                            {% csrf_token %}
+
+                            <label for="teacher_feedback_{{ enrollment.id }}">Teacher Feedback Based on Proof</label>
+                            <textarea id="teacher_feedback_{{ enrollment.id }}" name="teacher_feedback" placeholder="Write feedback before updating progress.">{{ enrollment.teacher_feedback }}</textarea>
+
+                            <div class="progress-actions">
+                                <button type="submit" formaction="{% url 'update_skill_enrollment_status' enrollment.id 'enrolled' %}" class="btn-small btn-secondary">Enrolled 25%</button>
+                                <button type="submit" formaction="{% url 'update_skill_enrollment_status' enrollment.id 'in_progress' %}" class="btn-small btn-primary">In Progress 50%</button>
+                                <button type="submit" formaction="{% url 'update_skill_enrollment_status' enrollment.id 'completed' %}" class="btn-small btn-success">Complete 100%</button>
+                            </div>
+                        </form>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">No connected students yet.</div>
+            <div class="empty-box">No student has selected you for skill enrollment yet.</div>
         {% endif %}
     </section>
 
-    <section class="glass-card teacher-section">
+    <section class="dash-card">
         <div class="section-head">
-            <h2>Pending Skill Verification Requests</h2>
-            <span class="section-tag">Review Queue</span>
-        </div>
-
-        {% if pending_verification_requests %}
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Skill</th>
-                            <th>Category</th>
-                            <th>Proof</th>
-                            <th>Message</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for req in pending_verification_requests %}
-                            <tr>
-                                <td>
-                                    {% if req.student.first_name or req.student.last_name %}
-                                        {{ req.student.first_name }} {{ req.student.last_name }}
-                                    {% else %}
-                                        {{ req.student.username }}
-                                    {% endif %}
-                                </td>
-
-                                <td>{{ req.skill.name }}</td>
-                                <td>{{ req.skill.category|default:"Not selected" }}</td>
-
-                                <td>
-                                    {% if req.skill.proof_file %}
-                                        <a href="{{ req.skill.proof_file.url }}" target="_blank">File</a>
-                                    {% endif %}
-
-                                    {% if req.skill.proof_link %}
-                                        <a href="{{ req.skill.proof_link }}" target="_blank">Link</a>
-                                    {% endif %}
-
-                                    {% if not req.skill.proof_file and not req.skill.proof_link %}
-                                        No proof
-                                    {% endif %}
-                                </td>
-
-                                <td>{{ req.message|default:"No message" }}</td>
-
-                                <td>
-                                    <div class="mini-actions">
-                                        <a href="{% url 'approve_skill_verification' req.pk %}" class="btn-small approve">Approve</a>
-                                        <a href="{% url 'reject_skill_verification' req.pk %}" class="btn-small reject">Reject</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div>
+                <h2 class="card-title">Pending Skill Verification Requests</h2>
+                <p class="card-subtitle">Approve or reject student skill verification requests.</p>
             </div>
-        {% else %}
-            <div class="empty-state">No pending skill verification requests.</div>
-        {% endif %}
-    </section>
-
-    <section class="glass-card teacher-section">
-        <div class="section-head">
-            <h2>Completed Verification Requests</h2>
-            <span class="section-tag">History</span>
         </div>
 
-        {% if completed_verification_requests %}
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Skill</th>
-                            <th>Status</th>
-                            <th>Level</th>
-                            <th>Feedback</th>
-                            <th>Responded On</th>
-                        </tr>
-                    </thead>
+        {% if pending_skill_requests %}
+            <div class="item-grid">
+                {% for req in pending_skill_requests %}
+                    <div class="item-card">
+                        <div class="item-top">
+                            <div>
+                                <h4>{{ req.skill.name }}</h4>
+                                <p><strong>Student:</strong> {{ req.student.get_full_name|default:req.student.username }}</p>
+                                <p>{{ req.message|default:"No message added." }}</p>
+                            </div>
+                            <span class="pill pending">{{ req.get_status_display }}</span>
+                        </div>
 
-                    <tbody>
-                        {% for req in completed_verification_requests %}
-                            <tr>
-                                <td>
-                                    {% if req.student.first_name or req.student.last_name %}
-                                        {{ req.student.first_name }} {{ req.student.last_name }}
-                                    {% else %}
-                                        {{ req.student.username }}
-                                    {% endif %}
-                                </td>
-
-                                <td>{{ req.skill.name }}</td>
-
-                                <td>
-                                    <span class="status-badge {{ req.status }}">
-                                        {{ req.get_status_display }}
-                                    </span>
-                                </td>
-
-                                <td>{{ req.skill.proficiency_level|default:"Not assigned" }}</td>
-                                <td>{{ req.feedback|default:"N/A" }}</td>
-                                <td>{{ req.responded_at|date:"d M Y, h:i A" }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="empty-state">No completed requests yet.</div>
-        {% endif %}
-    </section>
-
-    <section class="glass-card teacher-section">
-        <div class="section-head">
-            <h2>Verification Activity Logs</h2>
-            <span class="section-tag">Audit Trail</span>
-        </div>
-
-        {% if logs %}
-            <div class="log-list">
-                {% for log in logs %}
-                    <div class="log-card">
-                        <p><strong>{{ log.get_action_display }}</strong></p>
-
-                        {% if log.student %}
-                            <p>Student: {{ log.student.username }}</p>
-                        {% endif %}
-
-                        {% if log.teacher %}
-                            <p>Teacher: {{ log.teacher.username }}</p>
-                        {% endif %}
-
-                        {% if log.skill %}
-                            <p>Skill: {{ log.skill.name }}</p>
-                        {% else %}
-                            <p>Skill: N/A</p>
-                        {% endif %}
-
-                        <p>{{ log.note|default:"No note" }}</p>
-                        <p class="small-text">{{ log.created_at|date:"d M Y, h:i A" }}</p>
+                        <div class="item-actions">
+                            <a href="{% url 'approve_skill_verification' req.id %}" class="btn-small btn-success">Approve</a>
+                            <a href="{% url 'reject_skill_verification' req.id %}" class="btn-small btn-danger">Reject</a>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">No activity logs found.</div>
+            <div class="empty-box">No pending skill verification request.</div>
+        {% endif %}
+    </section>
+
+    <section class="dash-card">
+        <div class="section-head">
+            <div>
+                <h2 class="card-title">Completed Skill Verification Requests</h2>
+                <p class="card-subtitle">Previously approved or rejected requests.</p>
+            </div>
+        </div>
+
+        {% if completed_skill_requests %}
+            <div class="item-grid">
+                {% for req in completed_skill_requests %}
+                    <div class="item-card">
+                        <div class="item-top">
+                            <div>
+                                <h4>{{ req.skill.name }}</h4>
+                                <p><strong>Student:</strong> {{ req.student.get_full_name|default:req.student.username }}</p>
+                            </div>
+                            <span class="pill {{ req.status }}">{{ req.get_status_display }}</span>
+                        </div>
+
+                        {% if req.feedback %}
+                            <p><strong>Feedback:</strong> {{ req.feedback }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-box">No completed skill verification request.</div>
         {% endif %}
     </section>
 
